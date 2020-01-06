@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+import "google/api/annotations.proto";
+
+service Client {
+	rpc FizzBuzz(FizzBuzzRequest) returns (FizzBuzzResponse) {
+		option (google.api.http) = {
+			post: "/v1/fizzbuzz"
+			body: "*"
+		};
+	}
+}
+message FizzBuzzRequest {
+	int32 int1 = 1;
+	int32 int2 = 2;
+	int32 limit = 3;
+	string str1 = 4;
+	string str2 = 5;
+
+}
+message FizzBuzzResponse {
+	repeated string item = 6;
+}
