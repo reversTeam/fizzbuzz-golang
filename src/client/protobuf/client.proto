@@ -11,13 +11,13 @@ service Client {
 	}
 }
 message FizzBuzzRequest {
-	int32 int1 = 1;
-	int32 int2 = 2;
-	int32 limit = 3;
-	string str1 = 4;
-	string str2 = 5;
+	int32 Int1 = 1;
+	int32 Int2 = 2;
+	int32 Limit = 3;
+	string Str1 = 4;
+	string Str2 = 5;
 
 }
 message FizzBuzzResponse {
-	repeated string item = 6;
+	repeated string Items = 6;
 }
