@@ -11,11 +11,11 @@ service Client {
 	}
 }
 message FizzBuzzRequest {
-	int32 Int1 = 1;
-	int32 Int2 = 2;
-	int32 Limit = 3;
-	string Str1 = 4;
-	string Str2 = 5;
+	int32 Int1 = 1 [json_name="int1"];
+	int32 Int2 = 2 [json_name="int2"];
+	int32 Limit = 3 [json_name="limit"];
+	string Str1 = 4 [json_name="str1"];
+	string Str2 = 5 [json_name="str2"];
 
 }
 message FizzBuzzResponse {
