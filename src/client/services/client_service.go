@@ -6,13 +6,13 @@ import (
 	"strconv"
 )
 
-type server struct{}
+type Client struct{}
 
-func NewServer() *server {
-	return &server{}
+func NewServer() *Client {
+	return &Client{}
 }
 
-func (s *server) FizzBuzz(ctx context.Context, in *pb.FizzBuzzRequest) (*pb.FizzBuzzResponse, error) {
+func (o *Client) FizzBuzz(ctx context.Context, in *pb.FizzBuzzRequest) (*pb.FizzBuzzResponse, error) {
 	results := []string{}
 	limit := int(in.Limit)
 	fizz := int(in.Int1)
