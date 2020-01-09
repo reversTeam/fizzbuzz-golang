@@ -15,8 +15,8 @@ Implement a web server that will expose a REST API endpoint that:
 ## Checkpoint:
 The server needs to be:
   - Ready for production:
-	- [ ] Kubernetes (GCP)
-	- [ ] LB & Availability
+	- [x] Kubernetes (GCP)
+	- [x] LB & Availability
 	- [ ] Monitoring / Alerting (for the best)
 	- [ ] Terraformed (for the best)
 
