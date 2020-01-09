@@ -19,24 +19,30 @@ const (
 	// Default listen http server configuration
 	HTTP_DEFAULT_HOST = "127.0.0.1"
 	HTTP_DEFAULT_PORT = 8080
+
+	CLIENT_GRPC_DEFAULT_HOST = "127.0.0.1"
+	CLIENT_GRPC_DEFAULT_PORT = 42001
 )
 
 var (
-	http_host, http_port = getFlags()
+	httpHost, httpPort, clientGrpcHost, clientGrpcPort = getFlags()
 	httpServer *http.Server
 )
 
 
-func getFlags() (http_host *string, http_port *int) {
-	http_host = flag.String("http_host", HTTP_DEFAULT_HOST, "Default listening host")
-	http_port = flag.Int("http_port", HTTP_DEFAULT_PORT, "Default listening port")
+func getFlags() (httpHost *string, httpPort *int, clientGrpcHost *string, clientGrpcPort *int) {
+	httpHost = flag.String("http-host", HTTP_DEFAULT_HOST, "Default listening host")
+	httpPort = flag.Int("http-port", HTTP_DEFAULT_PORT, "Default listening port")
+
+	clientGrpcHost = flag.String("client-grpc-host", CLIENT_GRPC_DEFAULT_HOST, "Default client host connexion")
+	clientGrpcPort = flag.Int("client-grpc-port", CLIENT_GRPC_DEFAULT_PORT, "Default client port connexion")
 
 	flag.Parse()
 	return
 }
 
 func NewServer(host *string, port *int, mux *http.ServeMux) *http.Server {
-	uri := fmt.Sprintf("%s:%d", *http_host, *http_port)
+	uri := fmt.Sprintf("%s:%d", *httpHost, *httpPort)
 	return &http.Server{
 		Addr:           uri,
 		Handler:        mux,
@@ -70,23 +76,23 @@ func run() error {
 	defer cancel()
 	mux := http.NewServeMux()
 
-	gwmux, err := newGateway(ctx, 42001)
+	gwmux, err := newGateway(ctx)
 	if err != nil {
 		panic(err)
 	}
 	mux.Handle("/", gwmux)
 	
-	uri := fmt.Sprintf("%s:%d", *http_host, *http_port)
+	uri := fmt.Sprintf("%s:%d", *httpHost, *httpPort)
 	log.Printf("[HTTP] Server listen on %s\n", uri)
-	httpServer = NewServer(http_host, http_port, mux)
+	httpServer = NewServer(httpHost, httpPort, mux)
 	return httpServer.ListenAndServe()
 }
 
-func newGateway(ctx context.Context, port int) (http.Handler, error) {
+func newGateway(ctx context.Context) (http.Handler, error) {
 	opts := []grpc.DialOption{grpc.WithInsecure()}
 
 	gwmux := runtime.NewServeMux()
-	if err := gw.RegisterClientHandlerFromEndpoint(ctx, gwmux, fmt.Sprintf(":%d", port), opts); err != nil {
+	if err := gw.RegisterClientHandlerFromEndpoint(ctx, gwmux, fmt.Sprintf("%s:%d", *clientGrpcHost, *clientGrpcPort), opts); err != nil {
 		return nil, err
 	}
 

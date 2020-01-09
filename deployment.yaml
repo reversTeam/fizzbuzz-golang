@@ -1,0 +1,88 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: gateway
+  labels:
+    app: gateway
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: gateway-port
+  selector:
+    app: gateway
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gateway
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: gateway
+    spec:
+      containers:
+        - name: gateway
+          image: triviere42/fizzbuzz-golang
+          command: ["/bin/sh"]
+          args: ["-c", "fizzbuzz-gateway --http-host 0.0.0.0 --client-grpc-host client.default.svc.cluster.local"]
+          ports:
+            - containerPort: 8080
+              name: gateway-port
+
+
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: client
+  labels:
+    app: client
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 42001
+    targetPort: client-port
+  selector:
+    app: client
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: client
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: client
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: client
+    spec:
+      containers:
+        - name: client
+          image: triviere42/fizzbuzz-golang
+          command: ["/bin/sh"]
+          args: ["-c", "fizzbuzz-client --host 0.0.0.0"]
+          ports:
+            - containerPort: 42001
+              name: client-port
