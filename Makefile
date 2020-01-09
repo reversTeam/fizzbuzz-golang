@@ -33,3 +33,10 @@ build:
 	GOOS=linux GOARCH=amd64 go build -o client ./src/client/main.go
 	docker build -t triviere42/fizzbuzz-golang .
 	docker push triviere42/fizzbuzz-golang
+
+destroy:
+	kubectl delete deployment client gateway || true
+	kubectl delete service gateway client || true
+
+apply:
+	kubectl apply -f deployment.yaml
