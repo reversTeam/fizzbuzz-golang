@@ -1,0 +1,88 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: gateway
+  annotations:
+    cloud.google.com/load-balancer-type: "Internal"
+  labels:
+    app: fizzbuzz-gateway
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 8080
+  selector:
+    app: fizzbuzz-gateway
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fizzbuzz-gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fizzbuzz-gateway
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: fizzbuzz-gateway
+    spec:
+      containers:
+        - name: gateway
+          image: triviere42/fizzbuzz-golang
+          command: ["fizzbuzz-gateway"]
+          ports:
+            - containerPort: 8080
+
+
+
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: client
+  labels:
+    app: fizzbuzz-client
+  annotations:
+    cloud.google.com/load-balancer-type: "Internal"
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 42001
+    targetPort: 42001
+  selector:
+    app: fizzbuzz-client
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fizzbuzz-client
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fizzbuzz-client
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: fizzbuzz-client
+    spec:
+      containers:
+        - name: client
+          image: triviere42/fizzbuzz-golang
+          command: ["fizzbuzz-client"]
+          ports:
+            - containerPort: 42001
