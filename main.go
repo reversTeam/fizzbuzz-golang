@@ -22,21 +22,21 @@ const (
 )
 
 var (
-	http_host, http_port = getFlags()
+	httpHost, httpPort = getFlags()
 	httpServer *http.Server
 )
 
 
-func getFlags() (http_host *string, http_port *int) {
-	http_host = flag.String("http_host", HTTP_DEFAULT_HOST, "Default listening host")
-	http_port = flag.Int("http_port", HTTP_DEFAULT_PORT, "Default listening port")
+func getFlags() (httpHost *string, httpPort *int) {
+	httpHost = flag.String("http-host", HTTP_DEFAULT_HOST, "Default listening host")
+	httpPort = flag.Int("http-port", HTTP_DEFAULT_PORT, "Default listening port")
 
 	flag.Parse()
 	return
 }
 
 func NewServer(host *string, port *int, mux *http.ServeMux) *http.Server {
-	uri := fmt.Sprintf("%s:%d", *http_host, *http_port)
+	uri := fmt.Sprintf("%s:%d", *httpHost, *httpPort)
 	return &http.Server{
 		Addr:           uri,
 		Handler:        mux,
@@ -76,9 +76,9 @@ func run() error {
 	}
 	mux.Handle("/", gwmux)
 	
-	uri := fmt.Sprintf("%s:%d", *http_host, *http_port)
+	uri := fmt.Sprintf("%s:%d", *httpHost, *httpPort)
 	log.Printf("[HTTP] Server listen on %s\n", uri)
-	httpServer = NewServer(http_host, http_port, mux)
+	httpServer = NewServer(httpHost, httpPort, mux)
 	return httpServer.ListenAndServe()
 }
 
