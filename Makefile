@@ -1,6 +1,12 @@
 #!make
 install: protogen
 	go get ./...
+	kubectl create namespace monitoring
+	# kube prometheus
+	kubectl create -f prometheus/clusterRole.yaml
+	kubectl create -f prometheus/config-map.yaml
+	kubectl create -f prometheus/prometheus-deployment.yaml
+	kubectl create -f prometheus/prometheus-service.yaml
 
 protogen:
 	protoc -I/usr/local/include -I. \

@@ -17,7 +17,7 @@ The server needs to be:
   - Ready for production:
 	- [x] Kubernetes (GCP)
 	- [x] LB & Availability
-	- [ ] Monitoring / Alerting (for the best)
+	- [ ] Monitoring / Alerting (for the best) : https://github.com/bibinwilson/kubernetes-prometheus.git
 	- [ ] Terraformed (for the best)
 
   - Easy to maintain by other developers:
