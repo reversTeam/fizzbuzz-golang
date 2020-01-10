@@ -10,6 +10,14 @@ install: protogen
 	# kube state metrics
 	kubectl apply -f kube-state-metrics-configs/
 
+	# kube grafana
+	kubectl create -f grafana/datasource-config.yaml
+	kubectl create -f grafana/deployment.yaml
+	kubectl create -f grafana/service.yaml
+
+linkport:
+	kubectl port-forward service/grafana 3000:3000 -n monitoring &
+
 protogen:
 	protoc -I/usr/local/include -I. \
 	  --go_out=plugins=micro:$(GOPATH)/src/github.com/reversTeam/fizzbuzz-golang/src/client \
