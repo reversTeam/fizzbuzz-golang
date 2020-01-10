@@ -7,6 +7,8 @@ install: protogen
 	kubectl create -f prometheus/config-map.yaml
 	kubectl create -f prometheus/prometheus-deployment.yaml
 	kubectl create -f prometheus/prometheus-service.yaml
+	# kube state metrics
+	kubectl apply -f kube-state-metrics-configs/
 
 protogen:
 	protoc -I/usr/local/include -I. \
