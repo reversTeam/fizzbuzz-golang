@@ -17,7 +17,13 @@ The server needs to be:
   - Ready for production:
 	- [x] Kubernetes (GCP)
 	- [x] LB & Availability
-	- [ ] Monitoring / Alerting (for the best)
+	- [x] Monitoring: (cf. https://devopscube.com/setup-prometheus-monitoring-on-kubernetes/)
+	  - https://github.com/bibinwilson/kubernetes-prometheus.git
+	  - https://github.com/devopscube/kube-state-metrics-configs.git
+	  - https://devopscube.com/setup-grafana-kubernetes/
+	    - Import Dashboard: 8588, 6671
+	- [ ] Alerting
+	  - https://devopscube.com/alert-manager-kubernetes-guide/
 	- [ ] Terraformed (for the best)
 
   - Easy to maintain by other developers:

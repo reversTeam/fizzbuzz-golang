@@ -1,6 +1,22 @@
 #!make
 install: protogen
 	go get ./...
+	kubectl create namespace monitoring
+	# kube prometheus
+	kubectl create -f prometheus/clusterRole.yaml
+	kubectl create -f prometheus/config-map.yaml
+	kubectl create -f prometheus/prometheus-deployment.yaml
+	kubectl create -f prometheus/prometheus-service.yaml
+	# kube state metrics
+	kubectl apply -f kube-state-metrics-configs/
+
+	# kube grafana
+	kubectl create -f grafana/datasource-config.yaml
+	kubectl create -f grafana/deployment.yaml
+	kubectl create -f grafana/service.yaml
+
+linkport:
+	kubectl port-forward service/grafana 3000:3000 -n monitoring &
 
 protogen:
 	protoc -I/usr/local/include -I. \
