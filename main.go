@@ -2,11 +2,10 @@ package main
 import (
 	"log"
 	"net/http"
-	"github.com/golang/glog"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
-	gw "github.com/reversTeam/fizzbuzz-golang/src/client/protobuf"
+	gw "github.com/reversTeam/fizzbuzz-golang/src/endpoint/fizzbuzz/protobuf"
 	"flag"
 	"os"
 	"os/signal"
@@ -92,7 +91,7 @@ func newGateway(ctx context.Context) (http.Handler, error) {
 	opts := []grpc.DialOption{grpc.WithInsecure()}
 
 	gwmux := runtime.NewServeMux()
-	if err := gw.RegisterClientHandlerFromEndpoint(ctx, gwmux, fmt.Sprintf("%s:%d", *clientGrpcHost, *clientGrpcPort), opts); err != nil {
+	if err := gw.RegisterFizzBuzzHandlerFromEndpoint(ctx, gwmux, fmt.Sprintf("%s:%d", *clientGrpcHost, *clientGrpcPort), opts); err != nil {
 		return nil, err
 	}
 
@@ -100,11 +99,10 @@ func newGateway(ctx context.Context) (http.Handler, error) {
 }
 
 func main() {
-	defer glog.Flush()
 	done := configureSignals()
 
 	if err := run(); err != nil {
-		glog.Fatal(err)
+		log.Fatal(err)
 	}
 	<-done
 }

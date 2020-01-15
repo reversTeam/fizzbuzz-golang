@@ -4,6 +4,9 @@ metadata:
   name: gateway
   labels:
     app: gateway
+  annotations:
+    prometheus.io/scrape: 'true'
+    prometheus.io/port: '4242'
 spec:
   type: LoadBalancer
   ports:
@@ -50,6 +53,9 @@ metadata:
   name: client
   labels:
     app: client
+  annotations:
+    prometheus.io/scrape: 'true'
+    prometheus.io/port: '4242'
 spec:
   type: LoadBalancer
   ports:
@@ -82,7 +88,7 @@ spec:
         - name: client
           image: triviere42/fizzbuzz-golang
           command: ["/bin/sh"]
-          args: ["-c", "fizzbuzz-client --host 0.0.0.0"]
+          args: ["-c", "fizzbuzz-client --grpc-host 0.0.0.0 --redis-host redis-master.default.svc.cluster.local"]
           ports:
             - containerPort: 42001
               name: client-port
