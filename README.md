@@ -15,8 +15,10 @@ Implement a web server that will expose a REST API endpoint that:
 ## Checkpoint:
 The server needs to be:
   - Ready for production:
-	- [x] Kubernetes (GCP)
+	- [x] Kubernetes
+	  - Develop on GCP
 	- [x] LB & Availability
+	  - Loadbalanced by GCP Loadbalancer, client and gateway is scalabled
 	- [x] Monitoring: (cf. https://devopscube.com/setup-prometheus-monitoring-on-kubernetes/)
 	  - https://github.com/bibinwilson/kubernetes-prometheus.git
 	  - https://github.com/devopscube/kube-state-metrics-configs.git

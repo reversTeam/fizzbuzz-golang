@@ -3,24 +3,28 @@ install: protogen
 	go get ./...
 	kubectl create namespace monitoring
 	# kube prometheus
-	kubectl create -f prometheus/clusterRole.yaml
-	kubectl create -f prometheus/config-map.yaml
-	kubectl create -f prometheus/prometheus-deployment.yaml
-	kubectl create -f prometheus/prometheus-service.yaml
+	kubectl create -f kubernetes/prometheus/clusterRole.yaml
+	kubectl create -f kubernetes/prometheus/config-map.yaml
+	kubectl create -f kubernetes/prometheus/prometheus-deployment.yaml
+	kubectl create -f kubernetes/prometheus/prometheus-service.yaml
 	# kube state metrics
-	kubectl apply -f kube-state-metrics-configs/
+	kubectl apply -f kubernetes/kube-state-metrics-configs/
 
 	# kube grafana
-	kubectl create -f grafana/datasource-config.yaml
-	kubectl create -f grafana/deployment.yaml
-	kubectl create -f grafana/service.yaml
+	kubectl create -f kubernetes/grafana/datasource-config.yaml
+	kubectl create -f kubernetes/grafana/deployment.yaml
+	kubectl create -f kubernetes/grafana/service.yaml
+
+	# redis
+	kubectl create -f redis
 
 linkport:
-	kubectl port-forward service/grafana 3000:3000 -n monitoring &
+	#kubectl port-forward service/grafana 3000:3000 -n monitoring > /dev/null &
+	#kubectl port-forward service/prometheus-service 9090:8080 -n monitoring > /dev/null &
+	kubectl port-forward service/redis-master 6379:6379 > /dev/null &
 
 protogen:
 	protoc -I/usr/local/include -I. \
-	  --go_out=plugins=micro:$(GOPATH)/src/github.com/reversTeam/fizzbuzz-golang/src/client \
 	  -I${GOPATH}/src \
 	  -I${GOPATH}/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
 	  --go_out=plugins=grpc:. \
@@ -55,4 +59,4 @@ destroy:
 	kubectl delete service gateway client || true
 
 apply:
-	kubectl apply -f deployment.yaml
+	kubectl apply -f kubernetes/deployment.yaml
