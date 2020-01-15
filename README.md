@@ -35,6 +35,6 @@ The server needs to be:
 	- [ ] Fonctionnal & Unit test
 
 ## Bonus
-  - [ ] Add a statistics endpoint allowing users to know what the most frequent request has been. This endpoint should:
+  - [x] Add a statistics endpoint allowing users to know what the most frequent request has been. This endpoint should:
 	- Accept no parameter
 	- Return the parameters corresponding to the most used request, as well as the number of hits for this request

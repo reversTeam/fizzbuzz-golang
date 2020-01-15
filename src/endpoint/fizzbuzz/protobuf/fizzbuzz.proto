@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+package go.micro.service.fizzbuzz;
+
+import "google/api/annotations.proto";
+
+service FizzBuzz {
+	rpc Get(FizzBuzzGetRequest) returns (FizzBuzzGetResponse) {
+		option (google.api.http) = {
+			post: "/fizzbuzz"
+			body: "*"
+		};
+	}
+	rpc Stats(FizzBuzzStatsRequest) returns (FizzBuzzStatsResponse) {
+		option (google.api.http) = {
+			get: "/fizzbuzz"
+		};
+	}
+}
+
+message FizzBuzzGetRequest {
+	int32 Int1 = 1 [json_name="int1"];
+	int32 Int2 = 2 [json_name="int2"];
+	int32 Limit = 3 [json_name="limit"];
+	string Str1 = 4 [json_name="str1"];
+	string Str2 = 5 [json_name="str2"];
+}
+
+message FizzBuzzStatsRequest {
+
+}
+
+
+message FizzBuzzGetResponse {
+	repeated string Items = 6;
+}
+
+message FizzBuzzStatsResponse {
+	int32 Int1 = 1 [json_name="int1"];
+	int32 Int2 = 2 [json_name="int2"];
+	int32 Limit = 3 [json_name="limit"];
+	string Str1 = 4 [json_name="str1"];
+	string Str2 = 5 [json_name="str2"];
+	uint64 Requests = 8 [json_name="requests"];
+}
