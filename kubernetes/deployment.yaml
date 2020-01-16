@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: gateway
+  name: fizzbuzz
   labels:
-    app: gateway
+    app: fizzbuzz
   annotations:
     prometheus.io/scrape: 'true'
     prometheus.io/port: '4242'
@@ -11,19 +11,19 @@ spec:
   type: LoadBalancer
   ports:
   - port: 80
-    targetPort: gateway-port
+    targetPort: fb-http-port
   selector:
-    app: gateway
+    app: fizzbuzz
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: gateway
+  name: fizzbuzz
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: gateway
+      app: fizzbuzz
   strategy:
     rollingUpdate:
       maxSurge: 25%
@@ -32,63 +32,20 @@ spec:
   template:
     metadata:
       labels:
-        app: gateway
+        app: fizzbuzz
     spec:
       containers:
-        - name: gateway
+        - name: http
           image: triviere42/fizzbuzz-golang
           command: ["/bin/sh"]
-          args: ["-c", "fizzbuzz-gateway --http-host 0.0.0.0 --client-grpc-host client.default.svc.cluster.local"]
+          args: ["-c", "fizzbuzz-http --http-host 0.0.0.0"]
           ports:
             - containerPort: 8080
-              name: gateway-port
-
-
-
-
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: client
-  labels:
-    app: client
-  annotations:
-    prometheus.io/scrape: 'true'
-    prometheus.io/port: '4242'
-spec:
-  type: LoadBalancer
-  ports:
-  - port: 42001
-    targetPort: client-port
-  selector:
-    app: client
----
-
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: client
-spec:
-  replicas: 3
-  selector:
-    matchLabels:
-      app: client
-  strategy:
-    rollingUpdate:
-      maxSurge: 25%
-      maxUnavailable: 25%
-    type: RollingUpdate
-  template:
-    metadata:
-      labels:
-        app: client
-    spec:
-      containers:
-        - name: client
+              name: fb-http-port
+        - name: grpc
           image: triviere42/fizzbuzz-golang
           command: ["/bin/sh"]
-          args: ["-c", "fizzbuzz-client --grpc-host 0.0.0.0 --redis-host redis-master.default.svc.cluster.local"]
+          args: ["-c", "fizzbuzz-grpc --redis-host redis-master.default.svc.cluster.local"]
           ports:
             - containerPort: 42001
-              name: client-port
+              name: fb-grpc-port

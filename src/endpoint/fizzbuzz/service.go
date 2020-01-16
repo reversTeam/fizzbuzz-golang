@@ -50,21 +50,22 @@ func initRedisIndex(rc *redis.Client, key string) (err error) {
 func (o *FizzBuzz) Get(ctx context.Context, in *pb.FizzBuzzGetRequest) (*pb.FizzBuzzGetResponse, error) {
 	results := []string{}
 	limit := int(in.Limit)
-	fizz := int(in.Int1)
-	buzz := int(in.Int2)
+	int1 := int(in.Int1)
+	int2 := int(in.Int2)
+
 	fizzbuzz := in.Str1+in.Str2
-	key := fmt.Sprintf("%d:%d:%d:%s:%s", fizz, buzz, limit, in.Str1, in.Str2);
+	key := fmt.Sprintf("%d:%d:%d:%s:%s", int1, int2, limit, in.Str1, in.Str2);
 	err := initRedisIndex(o.redis.Client, key)
 	if err != nil {
 		// Don't kill the request but loggin it
 		log.Printf("Error %s cannot init the redis structure %s\n", key, err)
 	}
 	for i := 1; i <= limit; i++ {
-		if i%(fizz*buzz) == 0 {
+		if i%(int1*int2) == 0 {
 			results = append(results, fizzbuzz)
-		} else if i%fizz == 0 {
+		} else if i%int1 == 0 {
 			results = append(results, in.Str1)
-		} else if i%buzz == 0 {
+		} else if i%int1 == 0 {
 			results = append(results, in.Str2)
 		} else {
 			results = append(results, strconv.Itoa(i))
