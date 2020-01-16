@@ -19,8 +19,8 @@ const (
 	HTTP_DEFAULT_HOST = "127.0.0.1"
 	HTTP_DEFAULT_PORT = 8080
 
-	CLIENT_GRPC_DEFAULT_HOST = "127.0.0.1"
-	CLIENT_GRPC_DEFAULT_PORT = 42001
+	GRPC_DEFAULT_HOST = "127.0.0.1"
+	GRPC_DEFAULT_PORT = 42001
 )
 
 var (
@@ -33,8 +33,8 @@ func getFlags() (httpHost *string, httpPort *int, clientGrpcHost *string, client
 	httpHost = flag.String("http-host", HTTP_DEFAULT_HOST, "Default listening host")
 	httpPort = flag.Int("http-port", HTTP_DEFAULT_PORT, "Default listening port")
 
-	clientGrpcHost = flag.String("client-grpc-host", CLIENT_GRPC_DEFAULT_HOST, "Default client host connexion")
-	clientGrpcPort = flag.Int("client-grpc-port", CLIENT_GRPC_DEFAULT_PORT, "Default client port connexion")
+	clientGrpcHost = flag.String("grpc-host", GRPC_DEFAULT_HOST, "Default client host connexion")
+	clientGrpcPort = flag.Int("grpc-port", GRPC_DEFAULT_PORT, "Default client port connexion")
 
 	flag.Parse()
 	return

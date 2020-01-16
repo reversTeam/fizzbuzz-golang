@@ -2,5 +2,5 @@
 **/*.pb.go
 **/*.pb.gw.go
 **/*.swagger.json
-client
-gateway
+fizzbuzz-http
+fizzbuzz-grpc

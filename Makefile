@@ -16,11 +16,11 @@ install: protogen
 	kubectl create -f kubernetes/grafana/service.yaml
 
 	# redis
-	kubectl create -f redis
+	kubectl create -f kubernetes/redis
 
-linkport:
-	#kubectl port-forward service/grafana 3000:3000 -n monitoring > /dev/null &
-	#kubectl port-forward service/prometheus-service 9090:8080 -n monitoring > /dev/null &
+linkports:
+	kubectl port-forward service/grafana 3000:3000 -n monitoring > /dev/null &
+	kubectl port-forward service/prometheus-service 9090:8080 -n monitoring > /dev/null &
 	kubectl port-forward service/redis-master 6379:6379 > /dev/null &
 
 protogen:
@@ -48,11 +48,12 @@ clean:
 run:
 	go run gateway.go
 
-build:
-	GOOS=linux GOARCH=amd64 go build -o gateway ./main.go
-	GOOS=linux GOARCH=amd64 go build -o client ./src/endpoint/main.go
+build: clean protogen
+	GOOS=linux GOARCH=amd64 go build -o fizzbuzz-http ./main.go
+	GOOS=linux GOARCH=amd64 go build -o fizzbuzz-grpc ./src/endpoint/main.go
 	docker build -t triviere42/fizzbuzz-golang .
 	docker push triviere42/fizzbuzz-golang
+	rm fizzbuzz-http fizzbuzz-grpc
 
 destroy:
 	kubectl delete deployment client gateway || true
