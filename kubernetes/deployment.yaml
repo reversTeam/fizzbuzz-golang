@@ -20,7 +20,7 @@ kind: Deployment
 metadata:
   name: fizzbuzz
 spec:
-  replicas: 1
+  replicas: 6
   selector:
     matchLabels:
       app: fizzbuzz
@@ -38,7 +38,7 @@ spec:
         - name: http
           image: triviere42/fizzbuzz-golang
           command: ["/bin/sh"]
-          args: ["-c", "fizzbuzz-http --http-host 0.0.0.0"]
+          args: ["-c", "fizzbuzz-http --http-host 0.0.0.0 --exporter-host=0.0.0.0"]
           ports:
             - containerPort: 8080
               name: fb-http-port

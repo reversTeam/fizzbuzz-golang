@@ -4,7 +4,7 @@ import (
 	"log"
 	"fmt"
 	"time"
-	_ "strconv"
+	"strconv"
 	"net/http"
 	"github.com/prometheus/client_golang/prometheus"
     "github.com/prometheus/client_golang/prometheus/promauto"
@@ -16,7 +16,7 @@ type Exporter struct {
 	host string
 	port int
 	interval int
-	concurrency *prometheus.GaugeVec
+	requests *prometheus.GaugeVec
 }
 
 func NewExporter(host string, port int, interval int) *Exporter {
@@ -24,11 +24,11 @@ func NewExporter(host string, port int, interval int) *Exporter {
 		host: host,
 		port: port,
 		interval: interval,
-		concurrency : promauto.NewGaugeVec(
+		requests : promauto.NewGaugeVec(
 			prometheus.GaugeOpts{
-				Name: "fizzbuzz_concurrency_sec",
-				Help: "Number of concurrency request",
-			}, []string{"method", "path"}),
+				Name: "fizzbuzz_request_sec",
+				Help: "Number of requests",
+			}, []string{"code", "method", "path"}),
 	}
 
 	return exp
@@ -54,10 +54,7 @@ func (o *Exporter) Serve() {
 	} (uri)
 }
 
-func (o *Exporter) IncrConcurrency(code int, method string, path string) {
-	o.concurrency.WithLabelValues(method, path).Inc()
-}
-
-func (o *Exporter) DecrConcurrency(code int, method string, path string) {
-	o.concurrency.WithLabelValues(method, path).Dec()
+func (o *Exporter) IncrRequests(code int, method string, path string) {
+	str_code := strconv.Itoa(code)
+	o.requests.WithLabelValues(str_code, method, path).Inc()
 }
