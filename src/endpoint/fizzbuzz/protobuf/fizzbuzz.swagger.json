@@ -1,0 +1,118 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "src/endpoint/fizzbuzz/protobuf/fizzbuzz.proto",
+    "version": "version not set"
+  },
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/fizzbuzz": {
+      "get": {
+        "operationId": "Stats",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/fizzbuzzFizzBuzzStatsResponse"
+            }
+          }
+        },
+        "tags": [
+          "FizzBuzz"
+        ]
+      },
+      "post": {
+        "operationId": "Get",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/fizzbuzzFizzBuzzGetResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/fizzbuzzFizzBuzzGetRequest"
+            }
+          }
+        ],
+        "tags": [
+          "FizzBuzz"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "fizzbuzzFizzBuzzGetRequest": {
+      "type": "object",
+      "properties": {
+        "Int1": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "Int2": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "Limit": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "Str1": {
+          "type": "string"
+        },
+        "Str2": {
+          "type": "string"
+        }
+      }
+    },
+    "fizzbuzzFizzBuzzGetResponse": {
+      "type": "object",
+      "properties": {
+        "Items": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "fizzbuzzFizzBuzzStatsResponse": {
+      "type": "object",
+      "properties": {
+        "Int1": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "Int2": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "Limit": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "Str1": {
+          "type": "string"
+        },
+        "Str2": {
+          "type": "string"
+        },
+        "Requests": {
+          "type": "string",
+          "format": "uint64"
+        }
+      }
+    }
+  }
+}
