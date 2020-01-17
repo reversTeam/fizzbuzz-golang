@@ -76,9 +76,8 @@ func prettier(h http.Handler, exporter *common.Exporter) http.Handler {
 		method := r.Method
 		path := r.URL.Path
 		rwh := common.NewResponseWriterHandler(w)
-		exporter.IncrConcurrency(rwh.StatusCode, method, path)
 		h.ServeHTTP(rwh, r)
-		exporter.DecrConcurrency(rwh.StatusCode, method, path)
+		exporter.IncrRequests(rwh.StatusCode, method, path)
 	})
 }
 
