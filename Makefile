@@ -51,9 +51,10 @@ run:
 build: clean protogen
 	GOOS=linux GOARCH=amd64 go build -o fizzbuzz-http ./main.go
 	GOOS=linux GOARCH=amd64 go build -o fizzbuzz-grpc ./src/endpoint/main.go
+
+push:
 	docker build -t triviere42/fizzbuzz-golang .
 	docker push triviere42/fizzbuzz-golang
-	rm fizzbuzz-http fizzbuzz-grpc
 
 destroy:
 	kubectl delete deployment client gateway || true
