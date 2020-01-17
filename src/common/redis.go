@@ -1,16 +1,8 @@
 package common
 
 import (
-	"flag"
 	"github.com/go-redis/redis/v7"
 	"fmt"
-)
-
-// Default listen http server configuration
-const (
-	REDIS_DEFAULT_HOST = "127.0.0.1"
-	REDIS_DEFAULT_PASSWORD = ""
-	REDIS_DEFAULT_PORT = 6379
 )
 
 type RedisClient struct {
@@ -21,11 +13,11 @@ type RedisClient struct {
 }
 
 
-func NewRedisClient() *RedisClient {
+func NewRedisClient(host *string, port *int, password *string) *RedisClient {
 	return &RedisClient{
-		host: flag.String("redis-host", REDIS_DEFAULT_HOST, "Redis host"),
-		port: flag.Int("redis-port", REDIS_DEFAULT_PORT, "Redis port"),
-		password: flag.String("redis-password", REDIS_DEFAULT_PASSWORD, "Redis password"),
+		host: host,
+		port: port,
+		password: password,
 		Client: nil,
 	}
 }
