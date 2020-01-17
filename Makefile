@@ -1,4 +1,6 @@
 #!make
+
+
 install: protogen
 	go get ./...
 	kubectl create namespace monitoring
@@ -24,21 +26,23 @@ linkports:
 	kubectl port-forward service/redis-master 6379:6379 > /dev/null &
 
 protogen:
-	protoc -I/usr/local/include -I. \
-	  -I${GOPATH}/src \
-	  -I${GOPATH}/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
-	  --go_out=plugins=grpc:. \
-	src/endpoint/**/protobuf/*.proto
-	protoc -I/usr/local/include -I. \
-	  -I${GOPATH}/src \
-	  -I${GOPATH}/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
-	  --grpc-gateway_out=logtostderr=true:. \
-	src/endpoint/**/protobuf/*.proto
-	protoc -I/usr/local/include -I. \
-	  -I${GOPATH}/src \
-	  -I${GOPATH}/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
-	  --swagger_out=logtostderr=true:. \
-	src/endpoint/**/protobuf/*.proto
+	for proto in src/endpoint/**/protobuf/*.proto ; do \
+		protoc -I/usr/local/include -I. \
+		  -I${GOPATH}/src \
+		  -I${GOPATH}/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
+		  --go_out=plugins=grpc:. \
+		$$proto ; \
+		protoc -I/usr/local/include -I. \
+		  -I${GOPATH}/src \
+		  -I${GOPATH}/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
+		  --grpc-gateway_out=logtostderr=true:. \
+		$$proto ; \
+		protoc -I/usr/local/include -I. \
+		  -I${GOPATH}/src \
+		  -I${GOPATH}/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
+		  --swagger_out=logtostderr=true:. \
+		$$proto ; \
+	done
 
 clean:
 	rm src/endpoint/**/protobuf/*.pb.go || true

@@ -16,17 +16,13 @@ type FizzBuzz struct{
 	redis *common.RedisClient
 }
 
-func NewService() *FizzBuzz {
+func NewService(redis *common.RedisClient) *FizzBuzz {
 	return &FizzBuzz{
-		redis: common.NewRedisClient(),
+		redis: redis,
 	}
 }
 
 func (o *FizzBuzz) Init() (err error) {
-	err = o.redis.Connect()
-	if err != nil {
-		return err
-	}
 	return nil
 }
 
