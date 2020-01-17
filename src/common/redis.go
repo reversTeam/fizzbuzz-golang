@@ -40,3 +40,32 @@ func (o *RedisClient) Connect() (err error) {
 	_, err = o.Client.Ping().Result()
 	return err
 }
+
+func (o *RedisClient) CreateSortableIndex(index string, key string) (err error) {
+	_, err = o.Client.Get(key).Result()
+	if err == redis.Nil {
+		_, err = o.Client.Set(key, 1, 0).Result()
+		_, err = o.Client.ZAdd(index, &redis.Z{
+			Score:  0,
+			Member: key,
+		}).Result()	
+	} else if err != nil {
+		return err
+	}
+	return nil	
+}
+
+func (o *RedisClient) GetHighterScore(index string) (params string, score uint64, err error) {
+	res, err := o.Client.ZRangeWithScores(index, -1, -1).Result()
+
+	if err != nil {
+		return "", 0, err
+	}
+
+	return res[0].Member.(string), uint64(res[0].Score), nil
+}
+
+func (o *RedisClient) IncrIndex(index string, key string) (err error) {
+	_, err = o.Client.ZIncrBy("counter", 1, key).Result()
+	return err
+}

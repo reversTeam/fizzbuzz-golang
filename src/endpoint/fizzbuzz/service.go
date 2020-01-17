@@ -30,35 +30,21 @@ func (o *FizzBuzz) Init() (err error) {
 	return nil
 }
 
-func initRedisIndex(rc *redis.Client, key string) (err error) {
-	_, err = rc.Get(key).Result()
-	if err == redis.Nil {
-		_, err = rc.Set(key, 1, 0).Result()
-		_, err = rc.ZAdd("counter", &redis.Z{
-			Score:  0,
-			Member: key,
-		}).Result()	
-	} else if err != nil {
-		log.Println("Cannot be created", err)
-		return err
-
-	}
-
-	return nil
-}
-
 func (o *FizzBuzz) Get(ctx context.Context, in *pb.FizzBuzzGetRequest) (*pb.FizzBuzzGetResponse, error) {
 	results := []string{}
 	limit := int(in.Limit)
 	int1 := int(in.Int1)
 	int2 := int(in.Int2)
 
+	if int1 * int2 == 0 {
+		return nil, errors.New("The int1 or int2 parameters cannot be equals to 0")
+	}
+
 	fizzbuzz := in.Str1+in.Str2
 	key := fmt.Sprintf("%d:%d:%d:%s:%s", int1, int2, limit, in.Str1, in.Str2);
-	err := initRedisIndex(o.redis.Client, key)
-	if err != nil {
-		// Don't kill the request but loggin it
-		log.Printf("Error %s cannot init the redis structure %s\n", key, err)
+	if o.redis.CreateSortableIndex("counter", key) != nil {
+		// we can accept to continue but we lost the bonus
+		return nil, errors.New("Internal error cannot init the counter")
 	}
 	for i := 1; i <= limit; i++ {
 		if i%(int1*int2) == 0 {
@@ -71,9 +57,9 @@ func (o *FizzBuzz) Get(ctx context.Context, in *pb.FizzBuzzGetRequest) (*pb.Fizz
 			results = append(results, strconv.Itoa(i))
 		}
 	}
-	_, err = o.redis.Client.ZIncrBy("counter", 1, key).Result()
-	if err != nil {
-		log.Println("Cannot be incremented", err)
+	if o.redis.IncrIndex("counter", key) != nil {
+		// we can accept to continue but we lost the bonus
+		return nil, errors.New("Internal error the index cannot be increase")
 	}
 	
 	return &pb.FizzBuzzGetResponse{Items: results}, nil
@@ -84,12 +70,15 @@ func (o *FizzBuzz) Stats(ctx context.Context, in *pb.FizzBuzzStatsRequest) (*pb.
 	if err == redis.Nil || len(items) == 0 {
 		return nil, errors.New("No data found")
 	} else if err != nil {
-		log.Fatal("Error get Sort: ", err)
+		log.Fatal("No keys in counter: ", err)
 	}
 
-	res, err := o.redis.Client.ZRangeWithScores("counter", -1, -1).Result()
+	key, score, err := o.redis.GetHighterScore("counter")
+	if err != nil {
+		return nil, err
+	}
 
-	params := strings.Split(res[0].Member.(string), ":");
+	params := strings.Split(key, ":");
 	int1, err := strconv.Atoi(params[0])
 	if err != nil {
 		log.Fatal("Atoi failed int1: ", err)
@@ -104,7 +93,6 @@ func (o *FizzBuzz) Stats(ctx context.Context, in *pb.FizzBuzzStatsRequest) (*pb.
 	}
 	str1 := params[3]
 	str2 := params[4]
-	request := uint64(res[0].Score)
 	
 
 	return &pb.FizzBuzzStatsResponse{
@@ -113,6 +101,6 @@ func (o *FizzBuzz) Stats(ctx context.Context, in *pb.FizzBuzzStatsRequest) (*pb.
 		Limit: int32(limit),
 		Str1: str1,
 		Str2: str2,
-		Requests: uint64(request),
+		Requests: score,
 	}, nil
 }

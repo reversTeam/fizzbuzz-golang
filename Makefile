@@ -48,7 +48,7 @@ clean:
 run:
 	go run gateway.go
 
-build: clean protogen
+build:
 	GOOS=linux GOARCH=amd64 go build -o fizzbuzz-http ./main.go
 	GOOS=linux GOARCH=amd64 go build -o fizzbuzz-grpc ./src/endpoint/main.go
 
