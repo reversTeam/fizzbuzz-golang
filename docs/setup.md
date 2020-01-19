@@ -8,6 +8,7 @@ We cannot guarantee its functional state on another environment in the current s
    - Kubernetes : v1.13.11-gke.14
    - Compute Engine: 3 nodes `n1-standard-1`
  - `gcloud`: SDK 245.0.0 see https://cloud.google.com/sdk/docs/quickstart-macos?hl=fr
+  - Required python3
  - `kubectl`: v1.17.0 see https://kubernetes.io/fr/docs/tasks/tools/install-minikube/
  	- Linux see k3s, k8s, k9s
  - `go`: 1.13.5
@@ -26,18 +27,18 @@ source .env
 You will need to run the following commands in order to install all the tools necessary for compiling your proto files. These tools will allow you to centralize the definitions of your GRPC and HTTP endpoints in your proto files. You can also generate swagger documentation from the same definitions.
 ```
 # Get the protobuf files
- 	go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway
-	go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger
-	go get -u github.com/golang/protobuf/protoc-gen-go
+go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway
+go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger
+go get -u github.com/golang/protobuf/protoc-gen-go
 ```
 
- 3. Clone googleapis for the annotations.proto file
+ 3. Clone googleapis for the annotations.proto file (required for compile protobuf)
 You need to clone the project on your $GOPATH/src/gihub.com
 /!\ Maybe unusual, This step can be improved
 For some reason that escapes me the command `go get github.com/googleapis/googleapis` does not work. In order not to have compilation errors on .proto files, you will have to add it manually.
 ```
-	mkdir -p $GOPATH/src/github.com/googleapis
-	git clone https://github.com/googleapis/googleapis $GOPATH/src/github.com/googleapis/
+mkdir -p $GOPATH/src/github.com/googleapis
+git clone https://github.com/googleapis/googleapis $GOPATH/src/github.com/googleapis/
  ```
 
  4. Go to GCP, create a kubernetes cluster
@@ -45,9 +46,9 @@ Go to your GCP console to create your cluster, make a pool of 3 nodes of type `n
 
  5. Connect your local to the GCP cluster
 Connect to your GCP console, go to the `Compute > Kubernetes Engine > Clusters` section and click on `Connect` on your cluster, you should see a command that looks like this
- ```
- gcloud container clusters get-credentials fizzbuzz-golang --zone europe-west3 --project fizzbuzz-golang
- ```
+```
+gcloud container clusters get-credentials fizzbuzz-golang --zone europe-west3 --project fizzbuzz-golang
+```
 
  6. Apply kubernetes annexe files
 You can now launch the command which will allow you to install the additional services.
@@ -124,9 +125,9 @@ siege -c250 -t300S --content-type "application/json" 'http://35.228.75.112/fizzb
 ```
 
  4. Vegeta
-Vous pourrez alors utiliser `vegeta` qui n'as pas de limite sur la concurrence.
+You can then use `vegeta` which has no limit on competition.
 ```
 vegeta attack -duration=1200s -rate=6000 -targets=test/vegeta.list -output=/dev/null
 ```
 
-Vous pouvez aussi l'utiliser avec jplot pour avoir un graphique des requetes, je vous invite à regarder le lien suivant https://github.com/rs/jplot
+You can also use it with jplot to have a graph of the requests, I invite you to look at the following link https://github.com/rs/jplot
