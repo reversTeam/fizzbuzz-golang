@@ -27,6 +27,7 @@ The server needs to be:
 	  - https://github.com/devopscube/kube-state-metrics-configs.git
 	  - https://devopscube.com/setup-grafana-kubernetes/
 	    - Import Dashboard: 8588, 6671
+	    - Personnal dashboard
 	- [ ] Alerting
 	  - https://devopscube.com/alert-manager-kubernetes-guide/
 	- [ ] Terraformed (for the best)
