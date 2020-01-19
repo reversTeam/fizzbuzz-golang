@@ -1,7 +1,7 @@
 #!make
 
 
-install: protogen
+install:
 	go get ./...
 	kubectl create namespace monitoring
 	# kube prometheus
