@@ -2,7 +2,6 @@ package common
 
 import (
 	"google.golang.org/grpc"
-	"flag"
 	"net"
 	"log"
 	"fmt"
@@ -10,35 +9,22 @@ import (
 
 // Default listen http server configuration
 const (
-	DEFAULT_HOST = "127.0.0.1"
-	DEFAULT_PORT = 42001
-)
-
-// Define the GRPC server state in ENUM
-type GrpcServerState int
-const (
-	Init GrpcServerState = 0
-	Boot GrpcServerState = 1
-	Listen GrpcServerState = 3
-	Ready GrpcServerState = 4
-	Error GrpcServerState = 5
-	Gracefull GrpcServerState = 6
-	Stop GrpcServerState = 7
+	
 )
 
 // Define the GRPC Server Struct
 type GrpcServer struct {
-	host *string
-	port *int
+	host string
+	port int
 	Server *grpc.Server
-	State GrpcServerState
+	State FizzbuzzServerState
 	listener net.Listener
 }
 
-func NewGrpcServer() *GrpcServer {
+func NewGrpcServer(host string, port int) *GrpcServer {
 	return &GrpcServer{
-		host: flag.String("grpc-host", DEFAULT_HOST, "Grpc listening host"),
-		port: flag.Int("grpc-port", DEFAULT_PORT, "Grpc listening port"),
+		host: host,
+		port: port,
 		Server: grpc.NewServer(),
 		State: Init,
 		listener: nil,
@@ -46,7 +32,7 @@ func NewGrpcServer() *GrpcServer {
 }
 
 func (o *GrpcServer) Listen() (err error) {
-	uri := fmt.Sprintf("%s:%d", *o.host, *o.port)
+	uri := fmt.Sprintf("%s:%d", o.host, o.port)
 	o.listener, err = net.Listen("tcp", uri)
 	if err != nil {
 		o.State = Error
@@ -60,4 +46,20 @@ func (o *GrpcServer) Listen() (err error) {
 func (o *GrpcServer) Ready() {
 	go o.Server.Serve(o.listener)
 	o.State = Ready
+}
+
+func (o *GrpcServer) isGracefulable() bool {
+	switch (o.State) {
+	case
+		Ready,
+		Listen:
+		return true
+	}
+	return false
+}
+
+func (o *GrpcServer) Graceful() {
+	if o.isGracefulable() { 
+		o.Server.GracefulStop()
+	}
 }

@@ -6,14 +6,14 @@ import (
 )
 
 type RedisClient struct {
-	host *string
-	port *int
-	password *string
+	host string
+	port int
+	password string
 	Client *redis.Client
 }
 
 
-func NewRedisClient(host *string, port *int, password *string) *RedisClient {
+func NewRedisClient(host string, port int, password string) *RedisClient {
 	return &RedisClient{
 		host: host,
 		port: port,
@@ -24,8 +24,8 @@ func NewRedisClient(host *string, port *int, password *string) *RedisClient {
 
 func (o *RedisClient) Connect() (err error) {
 	o.Client = redis.NewClient(&redis.Options{
-		Addr: fmt.Sprintf("%s:%d", *o.host, *o.port),
-		Password: *o.password,
+		Addr: fmt.Sprintf("%s:%d", o.host, o.port),
+		Password: o.password,
 		DB: 0,
 	})
 	// _ muted pong return

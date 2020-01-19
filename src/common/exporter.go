@@ -34,10 +34,10 @@ func NewExporter(host string, port int, interval int) *Exporter {
 	return exp
 }
 
-func (o *Exporter) Records() {
+func (o *Exporter) WatchedMetrics() {
 	go func() {
 		for {
-			
+			// What you whant to watch
 			time.Sleep(time.Duration(o.interval) * time.Second)
 		}
 	}()
@@ -57,4 +57,14 @@ func (o *Exporter) Serve() {
 func (o *Exporter) IncrRequests(code int, method string, path string) {
 	str_code := strconv.Itoa(code)
 	o.requests.WithLabelValues(str_code, method, path).Inc()
+}
+
+func (o *Exporter) HandleHttpHandler(h http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		method := r.Method
+		path := r.URL.Path
+		rwh := NewResponseWriterHandler(w)
+		h.ServeHTTP(rwh, r)
+		o.IncrRequests(rwh.StatusCode, method, path)
+	})
 }
