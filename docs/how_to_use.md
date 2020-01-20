@@ -37,7 +37,7 @@ All of its commands will be executed if you start the command `make linkports`
 
 ### Grafana
 
-![Actual Deployment](https://raw.github.com/reversTeam/fizzbuzz-golang/master/assets/dashboard.jpg)
+![Actual Deployment](https://raw.github.com/reversTeam/fizzbuzz-golang/master/docs/assets/dashboard.png)
 
 The first time you use grafana you will have to connect with the default logins:
  - User: admin

@@ -1,14 +1,14 @@
 # Fizzbuzz Golang Deployment
 Currently the grpc service and the http over GRPC gateway are deployed on the same pod. This solution is sufficient in the case where we do not need a lot of computing power (~ 1.7k / req / node, ref standard-n1 GCP).
 
-![Actual Deployment](https://raw.github.com/reversTeam/fizzbuzz-golang/master/assets/dashboard.jpg)
+![Actual Deployment](https://raw.github.com/reversTeam/fizzbuzz-golang/master/docs/assets/dashboard.png)
 
 The pods are in rolling upgrade, that is to say that it will make a progressive rise in version during the pod update by checking that the new version works correctly, otherwise it will not go into production.
 
 In this configuration it is impossible to communicate directly with the GRPC server in order to limit the infrastructure costs. Indeed, we note a CPU consumption on the part of the http gateway 2 times higher than the GRPC service (ratio observed on calls with a `limit` of 100).
 
-![Actual Deployment](https://raw.github.com/reversTeam/fizzbuzz-golang/master/assets/deployment-v0.jpg)
-```
+![Actual Deployment](https://raw.github.com/reversTeam/fizzbuzz-golang/master/docs/assets/deployment-v0.jpg)
+```yaml
 apiVersion: v1
 kind: Service
 metadata:
@@ -71,8 +71,8 @@ It would eventually be necessary to remake a component that would manage a pool 
 It is also possible to connect other services than fizzbuzz, it is also possible to plan to create GRPC servers which would run on different pods and clusters.
 If the need has been justified, the code allows it.
 
-![Better Deployment](https://raw.github.com/reversTeam/fizzbuzz-golang/master/assets/deployment-v1.jpg)
-```
+![Better Deployment](https://raw.github.com/reversTeam/fizzbuzz-golang/master/docs/assets/deployment-v1.jpg)
+```yaml
 apiVersion: v1
 kind: Service
 metadata:

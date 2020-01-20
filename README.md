@@ -1,5 +1,7 @@
 # fizzbuzz-golang
 
+![Architecture](https://raw.github.com/reversTeam/fizzbuzz-golang/master/docs/assets/fizzbuzz-architecture.jpg)
+
 - [How to setup the project](https://github.com/reversTeam/fizzbuzz-golang/tree/master/docs/setup.md)
 - [How to use](https://github.com/reversTeam/fizzbuzz-golang/tree/master/docs/how_to_use.md)
 - [Deployment](https://github.com/reversTeam/fizzbuzz-golang/tree/master/docs/deployment.md)

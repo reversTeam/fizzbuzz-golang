@@ -1,6 +1,6 @@
 # Fizzbuzz Golang Architecture
 
-![Architecture](https://raw.github.com/reversTeam/fizzbuzz-golang/master/assets/fizzbuzz-architecture.jpg)
+![Architecture](https://raw.github.com/reversTeam/fizzbuzz-golang/master/docs/assets/fizzbuzz-architecture.jpg)
 
 In this architecture description we do not take into account information that is linked to deployment such as the notion of Loadbalancing service in Kubernetes. If you want more deployment information, please see [this section](https://github.com/reversTeam/fizzbuzz-golang/tree/master/docs/deployment.md).
 
@@ -13,7 +13,7 @@ The program currently works thanks to two main components:
 
 
 It is the gateway which connects to the GRPC service, as the following code shows us:
-```go
+```golang
 gw := common.NewGateway(ctx, *httpHost, *httpPort, *grpcHost, *grpcPort, opts)
 fizzbuzzService := fizzbuzz.NewService()
 
@@ -24,7 +24,7 @@ gw.Start()
 In a configuration with several micro services we could imagine going through a configuration file or a command argument, in order to activate or deactivate certain modules in order to scale only the routes that need them.
 
 The GRPC server is very similar, it will load the same service and instantiate it the elements necessary for its operation.
-```go
+```golang
 grpcServer := common.NewGrpcServer(ctx, *grpcHost, *grpcPort)
 fizzbuzzService := fizzbuzz.NewService()
 
@@ -77,7 +77,7 @@ The `.proto` files are not directly used, the following files must be generated:
   - `pb.gw.go` : for the gateway
 
 You can generate them with the following command, provided that you have followed the [setup project](https://github.com/reversTeam/fizzbuzz-golang/tree/master/docs/setup.md).
-```
+```bash
 make protogen
 ```
 
@@ -89,7 +89,7 @@ It is used as a [ServiceInterface](https://github.com/reversTeam/fizzbuzz-golang
  - RegisterGateway: which allows the service to register on the gateway
  - RegisterGrpc: which allows the service to declare itself to the Grpc server
 
-```
+```golang
 type ServiceInterface interface {
 	RegisterGateway(*Gateway) error
 	RegisterGrpc(*GrpcServer)
@@ -108,7 +108,7 @@ func (o *FizzBuzz) RegisterGrpc(gs *common.GrpcServer) {
 ```
 
 It only remains for us to add the function that takes care of the endpoint that we declared earlier:
-```
+```golang
 func (o *FizzBuzz) Get(ctx context.Context, in *pb.FizzBuzzGetRequest) (*pb.FizzBuzzGetResponse, error) {
 	results := []string{}
 	limit := uint64(in.Limit)
@@ -146,7 +146,7 @@ We have an [exporter](https://github.com/reversTeam/fizzbuzz-golang/tree/master/
 
 To function they act as middleware by encapsulating the request which is send to the GRPC server, then it increments the `GaugeVec` corresponding to the return code http from the GRPC service, as well as the method and the path to use.
 
-```
+```golang
 func (o *Exporter) HandleHttpHandler(h http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		method := r.Method
@@ -159,7 +159,7 @@ func (o *Exporter) HandleHttpHandler(h http.Handler) http.Handler {
 ```
 
 There is a part to rework so that the metrics can be declared directly from the service, currently it is hard in construction to export it:
-```
+```golang
 func NewExporter(host string, port int, interval int) *Exporter {
 	exp := &Exporter{
 		host: host,
