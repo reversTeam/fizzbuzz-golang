@@ -1,33 +1,33 @@
 package common
 
 import (
+	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"net"
 	"log"
 	"fmt"
 )
 
-// Default listen http server configuration
-const (
-	
-)
-
 // Define the GRPC Server Struct
 type GrpcServer struct {
+	Ctx context.Context
 	host string
 	port int
 	Server *grpc.Server
 	State FizzbuzzServerState
 	listener net.Listener
+	services []ServiceInterface
 }
 
-func NewGrpcServer(host string, port int) *GrpcServer {
+func NewGrpcServer(ctx context.Context, host string, port int) *GrpcServer {
 	return &GrpcServer{
+		Ctx: ctx,
 		host: host,
 		port: port,
 		Server: grpc.NewServer(),
 		State: Init,
 		listener: nil,
+		services: make([]ServiceInterface, 0),
 	};
 }
 
@@ -43,12 +43,31 @@ func (o *GrpcServer) Listen() (err error) {
 	return err
 }
 
-func (o *GrpcServer) Ready() {
+func (o *GrpcServer) AddService(service ServiceInterface) {
+	o.services = append(o.services, service)
+}
+
+func (o *GrpcServer) startServices() {
+	for _, service := range o.services {
+		service.RegisterGrpc(o)
+	}
+}
+
+func (o *GrpcServer) Start() {
+	o.Listen()
+	o.startServices()
 	go o.Server.Serve(o.listener)
 	o.State = Ready
 }
 
-func (o *GrpcServer) isGracefulable() bool {
+func (o *GrpcServer) GracefulStop() {
+	if o.isGracefulStopable() { 
+		o.Server.GracefulStop()
+	}
+}
+
+
+func (o *GrpcServer) isGracefulStopable() bool {
 	switch (o.State) {
 	case
 		Ready,
@@ -56,10 +75,4 @@ func (o *GrpcServer) isGracefulable() bool {
 		return true
 	}
 	return false
-}
-
-func (o *GrpcServer) Graceful() {
-	if o.isGracefulable() { 
-		o.Server.GracefulStop()
-	}
 }

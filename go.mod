@@ -27,6 +27,7 @@ require (
 	github.com/miekg/dns v1.1.27 // indirect
 	github.com/monochromegane/terminal v0.0.0-20161222050454-9bc47e2707d9 // indirect
 	github.com/nats-io/jwt v0.3.2 // indirect
+	github.com/prometheus/client_golang v1.2.1
 	github.com/rs/jaggr v0.0.0-20180312081622-5f9ce331c520 // indirect
 	github.com/rs/jplot v0.0.0-20180624024257-9b69b4534805 // indirect
 	github.com/tsenart/go-tsz v0.0.0-20180814235614-0bd30b3df1c3 // indirect
