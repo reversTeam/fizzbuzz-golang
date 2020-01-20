@@ -19,9 +19,9 @@ service FizzBuzz {
 }
 
 message FizzBuzzGetRequest {
-	int32 Int1 = 1 [json_name="int1"];
-	int32 Int2 = 2 [json_name="int2"];
-	int32 Limit = 3 [json_name="limit"];
+	uint64 Int1 = 1 [json_name="int1"];
+	uint64 Int2 = 2 [json_name="int2"];
+	uint64 Limit = 3 [json_name="limit"];
 	string Str1 = 4 [json_name="str1"];
 	string Str2 = 5 [json_name="str2"];
 }
@@ -36,9 +36,9 @@ message FizzBuzzGetResponse {
 }
 
 message FizzBuzzStatsResponse {
-	int32 Int1 = 1 [json_name="int1"];
-	int32 Int2 = 2 [json_name="int2"];
-	int32 Limit = 3 [json_name="limit"];
+	uint64 Int1 = 1 [json_name="int1"];
+	uint64 Int2 = 2 [json_name="int2"];
+	uint64 Limit = 3 [json_name="limit"];
 	string Str1 = 4 [json_name="str1"];
 	string Str2 = 5 [json_name="str2"];
 	uint64 Requests = 8 [json_name="requests"];

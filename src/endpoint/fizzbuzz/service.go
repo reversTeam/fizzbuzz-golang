@@ -40,11 +40,11 @@ func (o *FizzBuzz) RegisterGrpc(gs *common.GrpcServer) {
 
 func (o *FizzBuzz) Get(ctx context.Context, in *pb.FizzBuzzGetRequest) (*pb.FizzBuzzGetResponse, error) {
 	results := []string{}
-	limit := int(in.Limit)
-	int1 := int(in.Int1)
-	int2 := int(in.Int2)
+	limit := uint64(in.Limit)
+	int1 := uint64(in.Int1)
+	int2 := uint64(in.Int2)
 
-	if int1 < 1 || int2 < 1 {
+	if int1 * int2 == 0 {
 		return nil, errors.New("int1 and int2 parameters need to be more than 0")
 	}
 	if in.Str1 == "" || in.Str2 == "" {
@@ -57,7 +57,7 @@ func (o *FizzBuzz) Get(ctx context.Context, in *pb.FizzBuzzGetRequest) (*pb.Fizz
 		// we can accept to continue but we lost the bonus
 		return nil, errors.New("Internal error cannot init the counter")
 	}
-	for i := 1; i <= limit; i++ {
+	for i := uint64(1); i <= limit; i++ {
 		if i%(int1*int2) == 0 {
 			results = append(results, fizzbuzz)
 		} else if i%int1 == 0 {
@@ -65,7 +65,7 @@ func (o *FizzBuzz) Get(ctx context.Context, in *pb.FizzBuzzGetRequest) (*pb.Fizz
 		} else if i%int2 == 0 {
 			results = append(results, in.Str2)
 		} else {
-			results = append(results, strconv.Itoa(i))
+			results = append(results, strconv.FormatUint(i, 10))
 		}
 	}
 	if o.redis.IncrIndex("counter", key) != nil {
@@ -90,26 +90,27 @@ func (o *FizzBuzz) Stats(ctx context.Context, in *pb.FizzBuzzStatsRequest) (*pb.
 	}
 
 	params := strings.Split(key, ":");
-	int1, err := strconv.Atoi(params[0])
+	int1, err := strconv.ParseUint(params[0], 10, 64)
 	if err != nil {
-		log.Fatal("Atoi failed int1: ", err)
+		return nil, errors.New("Cannot read int1")
 	}
-	int2, err := strconv.Atoi(params[1])
+	int2, err := strconv.ParseUint(params[1], 10, 64)
 	if err != nil {
-		log.Fatal("Atoi failed int2: ", err)
+		return nil, errors.New("Cannot read int2")
+
 	}
-	limit, err := strconv.Atoi(params[2])
+	limit, err := strconv.ParseUint(params[2], 10, 64)
 	if err != nil {
-		log.Fatal("Atoi failed limit: ", err)
+		return nil, errors.New("Cannot read limit")
 	}
 	str1 := params[3]
 	str2 := params[4]
 	
 
 	return &pb.FizzBuzzStatsResponse{
-		Int1: int32(int1),
-		Int2: int32(int2),
-		Limit: int32(limit),
+		Int1: uint64(int1),
+		Int2: uint64(int2),
+		Limit: uint64(limit),
 		Str1: str1,
 		Str2: str2,
 		Requests: score,
