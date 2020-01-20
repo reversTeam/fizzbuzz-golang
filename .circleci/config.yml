@@ -7,7 +7,6 @@ jobs:
     docker:
       # specify the version
       - image: circleci/golang:1.13
-      - image: redis
 
     #### TEMPLATE_NOTE: go expects specific checkout path representing url
     #### expecting it in the form of
@@ -20,6 +19,15 @@ jobs:
       # specify any bash command here prefixed with `run: `
       - run: go get -v -t -d ./...
       - run: make build
-      - run: ./fizzbuzz-grpc &
-      - run: ./fizzbuzz-http &
-      - run: go test -v ./...
+      - run: |
+          wget http://download.redis.io/redis-stable.tar.gz
+          tar xzf redis-stable.tar.gz
+          mv redis-stable redis
+          cd redis && make
+          ./src/redis-server --port 6379 &
+          cd -
+          ./fizzbuzz-grpc &
+          sleep 1
+          ./fizzbuzz-http &
+          ss -tulw
+          go test -v ./...
