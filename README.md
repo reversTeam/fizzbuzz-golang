@@ -1,6 +1,9 @@
 # fizzbuzz-golang
 
 - [How to setup the project](https://github.com/reversTeam/fizzbuzz-golang/tree/master/docs/setup.md)
+- [How to use](https://github.com/reversTeam/fizzbuzz-golang/tree/master/docs/how_to_use.md)
+- [Deployment](https://github.com/reversTeam/fizzbuzz-golang/tree/master/docs/deployment.md)
+- [Architecture](https://github.com/reversTeam/fizzbuzz-golang/tree/master/docs/architecture.md)
 
 The original fizz-buzz consists in writing all numbers from 1 to 100, and just replacing all multiples of 3 by "fizz", all multiples of 5 by "buzz", and all multiples of 15 by "fizzbuzz".
 
@@ -26,8 +29,8 @@ The server needs to be:
 	  - https://github.com/bibinwilson/kubernetes-prometheus.git
 	  - https://github.com/devopscube/kube-state-metrics-configs.git
 	  - https://devopscube.com/setup-grafana-kubernetes/
-	    - Import Dashboard: 8588, 6671
-	    - Personnal dashboard
+	    - Import Dashboard: [8588](https://grafana.com/grafana/dashboards/8588)
+	    - Personnal metrics
 	- [ ] Alerting
 	  - https://devopscube.com/alert-manager-kubernetes-guide/
 	- [ ] Terraformed (for the best)
