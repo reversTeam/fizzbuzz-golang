@@ -24,7 +24,7 @@ func NewGrpcServer(ctx context.Context, host string, port int) *GrpcServer {
 		Ctx: ctx,
 		host: host,
 		port: port,
-		Server: grpc.NewServer(),
+		Server: grpc.NewServer(grpc.WriteBufferSize(2147483647), grpc.ReadBufferSize(2147483647)),
 		State: Init,
 		listener: nil,
 		services: make([]ServiceInterface, 0),

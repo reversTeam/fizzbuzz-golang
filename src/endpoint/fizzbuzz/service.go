@@ -9,6 +9,7 @@ import (
 	"github.com/go-redis/redis/v7"
 	pb "github.com/reversTeam/fizzbuzz-golang/src/endpoint/fizzbuzz/protobuf"
 	"github.com/reversTeam/fizzbuzz-golang/src/common"
+	"github.com/golang/protobuf/ptypes/empty"
 	"golang.org/x/net/context"
 )
 
@@ -76,7 +77,7 @@ func (o *FizzBuzz) Get(ctx context.Context, in *pb.FizzBuzzGetRequest) (*pb.Fizz
 	return &pb.FizzBuzzGetResponse{Items: results}, nil
 }
 
-func (o *FizzBuzz) Stats(ctx context.Context, in *pb.FizzBuzzStatsRequest) (*pb.FizzBuzzStatsResponse, error) {
+func (o *FizzBuzz) Stats(ctx context.Context, in *empty.Empty) (*pb.FizzBuzzStatsResponse, error) {
 	items, err := o.redis.Client.Keys("counter").Result()
 	if err == redis.Nil || len(items) == 0 {
 		return nil, errors.New("No data found")

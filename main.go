@@ -49,7 +49,11 @@ func main() {
 	flag.Parse()
 
 	// Create a gateway
-	gw := common.NewGateway(ctx, *httpHost, *httpPort, *grpcHost, *grpcPort, []grpc.DialOption{grpc.WithInsecure()})
+	opts := []grpc.DialOption{
+		grpc.WithInsecure(),
+		grpc.WithDefaultCallOptions(grpc.MaxCallRecvMsgSize(1099511627776), grpc.MaxCallSendMsgSize(1099511627776)),
+	}
+	gw := common.NewGateway(ctx, *httpHost, *httpPort, *grpcHost, *grpcPort, opts)
 	// Add exporter for grafana export metrics
 	gw.Http.InitExporter(*exporterHost, *exporterPort, *exporterInterval)
 	// Catch ctrl+c and graceful stop 
