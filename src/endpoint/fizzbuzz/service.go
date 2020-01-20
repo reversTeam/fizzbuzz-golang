@@ -11,6 +11,7 @@ import (
 	"github.com/reversTeam/fizzbuzz-golang/src/common"
 	"github.com/golang/protobuf/ptypes/empty"
 	"golang.org/x/net/context"
+	"sync"
 )
 
 // Define the service structure
@@ -49,8 +50,9 @@ func (o *FizzBuzz) RegisterGrpc(gs *common.GrpcServer) {
 //  - grpc : Get
 //  - http : POST /fizzbuzz
 func (o *FizzBuzz) Get(ctx context.Context, in *pb.FizzBuzzGetRequest) (*pb.FizzBuzzGetResponse, error) {
-	results := []string{}
+	var wg sync.WaitGroup
 	limit := uint64(in.Limit)
+	results := make([]string, limit)
 	int1 := uint64(in.Int1)
 	int2 := uint64(in.Int2)
 
@@ -70,16 +72,30 @@ func (o *FizzBuzz) Get(ctx context.Context, in *pb.FizzBuzzGetRequest) (*pb.Fizz
 		// we can accept to continue but we lost the bonus
 		return nil, errors.New("Internal error cannot init the counter")
 	}
-	for i := uint64(1); i <= limit; i++ {
-		if i%(int1*int2) == 0 {
-			results = append(results, fizzbuzz)
-		} else if i%int1 == 0 {
-			results = append(results, in.Str1)
-		} else if i%int2 == 0 {
-			results = append(results, in.Str2)
+	for i := uint64(0); i < limit; {
+		if i + 1000 <= limit {
+			wg.Add(1000)
+		} else if i != 0 {
+			wg.Add(int((limit - i) % 1000))
 		} else {
-			results = append(results, strconv.FormatUint(i, 10))
+			wg.Add(int(limit))
 		}
+		for  j := uint64(1); j <= 1000 && i < limit; j++ {
+			go func(waitGroup *sync.WaitGroup, results []string, k uint64, int1 uint64, int2 uint64, str1 string, str2 string, str1str2 string) {
+				defer waitGroup.Done()
+				if (k+1)%(int1*int2) == 0 {
+					results[k] = fizzbuzz
+				} else if (k+1)%int1 == 0 {
+					results[k] = str1
+				} else if (k+1)%int2 == 0 {
+					results[k] = str2
+				} else {
+					results[k] = strconv.FormatUint((k+1), 10)
+				}
+			}(&wg, results, i, int1, int2, in.Str1, in.Str2, fizzbuzz)
+			i++
+		}
+		wg.Wait()
 	}
 	if o.redis.IncrIndex("counter", key) != nil {
 		// we can accept to continue but we lost the bonus
