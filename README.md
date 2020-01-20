@@ -39,9 +39,13 @@ The server needs to be:
 
   - Easy to maintain by other developers:
 	- [ ] Linter
-	- [ ] CI/CD : https://circleci.com/docs/
+	- [x] CI : https://circleci.com/docs/
+	  - [x] Fonctionnal 
+	  - [ ] Unit test (for the best)
+	- [ ] CD (for the best)
+		- Required to add registry in GCP
+		- Add variable in circle-ci for GCP access 
 	- [ ] Changelog (for the best) : https://github.com/git-chglog/git-chglog
-	- [ ] Fonctionnal & Unit test
 
 ## Bonus
   - [x] Add a statistics endpoint allowing users to know what the most frequent request has been. This endpoint should:
