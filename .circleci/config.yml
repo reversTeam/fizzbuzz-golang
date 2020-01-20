@@ -7,11 +7,7 @@ jobs:
     docker:
       # specify the version
       - image: circleci/golang:1.13
-
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/postgres:9.4
+      - image: redis
 
     #### TEMPLATE_NOTE: go expects specific checkout path representing url
     #### expecting it in the form of
@@ -23,5 +19,7 @@ jobs:
 
       # specify any bash command here prefixed with `run: `
       - run: go get -v -t -d ./...
-      - run: go test -v ./...
       - run: make build
+      - run: ./fizzbuzz-grpc &
+      - run: ./fizzbuzz-http &
+      - run: go test -v ./...
