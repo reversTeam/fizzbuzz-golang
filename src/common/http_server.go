@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"time"
 	"fmt"
+	"log"
 	"golang.org/x/net/context"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 )
@@ -18,28 +19,30 @@ type HttpServer struct {
 }
 
 func NewHttpServer(host string, port int) *HttpServer {
+	uri := fmt.Sprintf("%s:%d", host, port)
+	mux := http.NewServeMux()
 	return &HttpServer{
 		Host: host,
 		Port: port,
-		Server: nil,
+		Server: &http.Server{
+			Addr:           uri,
+			Handler:        mux,
+			ReadTimeout:    10 * time.Second,
+			WriteTimeout:   10 * time.Second,
+			MaxHeaderBytes: 1 << 20,
+		},
 		State: Init,
-		mux: http.NewServeMux(),
+		mux: mux,
 		exporter: nil,
 	}
 }
 
-func (o *HttpServer) Init(exporterHost string, exporterPort int, exporterInterval int) {
-	uri := fmt.Sprintf("%s:%d", o.Host, o.Port)
-	o.Server = &http.Server{
-		Addr:           uri,
-		Handler:        o.mux,
-		ReadTimeout:    10 * time.Second,
-		WriteTimeout:   10 * time.Second,
-		MaxHeaderBytes: 1 << 20,
-	}
+func (o *HttpServer) InitExporter(exporterHost string, exporterPort int, exporterInterval int) {
 	o.exporter = NewExporter(exporterHost, exporterPort, exporterInterval)
 	// Todo: Add watched metrics
 	// exporter.WatchedMetrics()
+
+	// Serve start a goroutine
 	o.exporter.Serve()
 }
 
@@ -52,9 +55,11 @@ func (o *HttpServer) Handle(path string, mux *runtime.ServeMux) {
 }
 
 func (o *HttpServer) Listen() error {
+	uri := fmt.Sprintf("%s:%d", o.Host, o.Port)
+	log.Printf("[HTTP] Server listen on %s\n", uri)
 	return o.Server.ListenAndServe()
 }
 
-func (o *HttpServer) Graceful() {
+func (o *HttpServer) GracefulStop() {
 	o.Server.Shutdown(context.Background())
 }

@@ -8,11 +8,11 @@ import (
 )
 
 
-type ServerGracefulable interface{
-	Graceful()
+type ServerGracefulStopableInterface interface{
+	GracefulStop()
 }
 
-func GracefulSignals(server ServerGracefulable) (done chan bool) {
+func GracefulStopSignals(server ServerGracefulStopableInterface) (done chan bool) {
 	done = make(chan bool, 1)
 	sigs := make(chan os.Signal, 1)
 	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
@@ -21,7 +21,7 @@ func GracefulSignals(server ServerGracefulable) (done chan bool) {
 	go func() {
 		sig := <-sigs
 		log.Println("[SYSTEM]: Signal catch:", sig)
-		server.Graceful()
+		server.GracefulStop()
 		done <- true
 	}()
 	return

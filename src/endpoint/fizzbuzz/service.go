@@ -1,7 +1,6 @@
 package fizzbuzz
 
 import (
-	"context"
 	"strconv"
 	"strings"
 	"fmt"
@@ -10,20 +9,33 @@ import (
 	"github.com/go-redis/redis/v7"
 	pb "github.com/reversTeam/fizzbuzz-golang/src/endpoint/fizzbuzz/protobuf"
 	"github.com/reversTeam/fizzbuzz-golang/src/common"
+	"golang.org/x/net/context"
 )
 
-type FizzBuzz struct{
+type FizzBuzz struct {
 	redis *common.RedisClient
 }
 
-func NewService(redis *common.RedisClient) *FizzBuzz {
+func NewService() *FizzBuzz {
 	return &FizzBuzz{
-		redis: redis,
+		redis: nil,
 	}
 }
 
-func (o *FizzBuzz) Init() (err error) {
-	return nil
+func (o *FizzBuzz) SetRedis(redis *common.RedisClient) (err error) {
+	o.redis = redis
+	_, err = o.redis.Client.Ping().Result()
+
+	return err
+}
+
+func (o *FizzBuzz) RegisterGateway(gw *common.Gateway) error {
+	uri := fmt.Sprintf("%s:%d", gw.GrpcHost, gw.GrpcPort)
+	return pb.RegisterFizzBuzzHandlerFromEndpoint(gw.Ctx, gw.Mux, uri, gw.GrpcOpts)
+}
+
+func (o *FizzBuzz) RegisterGrpc(gs *common.GrpcServer) {
+	pb.RegisterFizzBuzzServer(gs.Server, o)
 }
 
 func (o *FizzBuzz) Get(ctx context.Context, in *pb.FizzBuzzGetRequest) (*pb.FizzBuzzGetResponse, error) {
@@ -32,8 +44,11 @@ func (o *FizzBuzz) Get(ctx context.Context, in *pb.FizzBuzzGetRequest) (*pb.Fizz
 	int1 := int(in.Int1)
 	int2 := int(in.Int2)
 
-	if int1 * int2 == 0 {
-		return nil, errors.New("The int1 or int2 parameters cannot be equals to 0")
+	if int1 < 1 || int2 < 1 {
+		return nil, errors.New("int1 and int2 parameters need to be more than 0")
+	}
+	if in.Str1 == "" || in.Str2 == "" {
+		return nil, errors.New("str1 and str2 parameters cannot be empty")
 	}
 
 	fizzbuzz := in.Str1+in.Str2
@@ -47,7 +62,7 @@ func (o *FizzBuzz) Get(ctx context.Context, in *pb.FizzBuzzGetRequest) (*pb.Fizz
 			results = append(results, fizzbuzz)
 		} else if i%int1 == 0 {
 			results = append(results, in.Str1)
-		} else if i%int1 == 0 {
+		} else if i%int2 == 0 {
 			results = append(results, in.Str2)
 		} else {
 			results = append(results, strconv.Itoa(i))
