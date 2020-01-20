@@ -47,6 +47,9 @@ func (o *FizzBuzz) Get(ctx context.Context, in *pb.FizzBuzzGetRequest) (*pb.Fizz
 	if int1 * int2 == 0 {
 		return nil, errors.New("int1 and int2 parameters need to be more than 0")
 	}
+	if int1 == int2 {
+		return nil, errors.New("We can't choice between str1 or str2, because int1 and int2 has a same value")	
+	}
 	if in.Str1 == "" || in.Str2 == "" {
 		return nil, errors.New("str1 and str2 parameters cannot be empty")
 	}
