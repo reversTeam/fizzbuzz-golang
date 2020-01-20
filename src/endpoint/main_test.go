@@ -12,7 +12,7 @@ import (
 	"github.com/golang/protobuf/ptypes/empty"
 )
 
-func TestGrpcGetRequest(t *testing.T) {
+func TestGrpcRequest(t *testing.T) {
 	var conn *grpc.ClientConn
 	conn, err := grpc.Dial("127.0.0.1:42001", grpc.WithInsecure(), grpc.WithDefaultCallOptions(grpc.MaxCallRecvMsgSize(1099511627776)))
 	if err != nil {

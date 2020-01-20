@@ -9,6 +9,7 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 )
 
+// Definition of HttpServer struct
 type HttpServer struct {
 	Host string
 	Port int
@@ -18,6 +19,7 @@ type HttpServer struct {
 	exporter *Exporter
 }
 
+// Init HttpServer
 func NewHttpServer(host string, port int) *HttpServer {
 	uri := fmt.Sprintf("%s:%d", host, port)
 	mux := http.NewServeMux()
@@ -37,6 +39,8 @@ func NewHttpServer(host string, port int) *HttpServer {
 	}
 }
 
+// Todo: move this code in Gateway
+// Init and attach exporter to the HttpServer
 func (o *HttpServer) InitExporter(exporterHost string, exporterPort int, exporterInterval int) {
 	o.exporter = NewExporter(exporterHost, exporterPort, exporterInterval)
 	// Todo: Add watched metrics
@@ -46,6 +50,7 @@ func (o *HttpServer) InitExporter(exporterHost string, exporterPort int, exporte
 	o.exporter.Serve()
 }
 
+// If the exporter is setup, add http handler for catch metrics
 func (o *HttpServer) Handle(path string, mux *runtime.ServeMux) {
 	if o.exporter != nil {
 		o.mux.Handle(path, o.exporter.HandleHttpHandler(mux))
@@ -54,12 +59,14 @@ func (o *HttpServer) Handle(path string, mux *runtime.ServeMux) {
 	}
 }
 
+// Start the http server, ready for handle connexion
 func (o *HttpServer) Listen() error {
 	uri := fmt.Sprintf("%s:%d", o.Host, o.Port)
 	log.Printf("[HTTP] Server listen on %s\n", uri)
 	return o.Server.ListenAndServe()
 }
 
+// Catch the SIG_TERM and exit cleanly
 func (o *HttpServer) GracefulStop() {
 	o.Server.Shutdown(context.Background())
 }

@@ -13,16 +13,20 @@ import (
 	"golang.org/x/net/context"
 )
 
+// Define the service structure
 type FizzBuzz struct {
 	redis *common.RedisClient
 }
 
+// Instanciate the service without dependency because it's role of ServiceFactory
+// And because Gateway no need redis connexion for work
 func NewService() *FizzBuzz {
 	return &FizzBuzz{
 		redis: nil,
 	}
 }
 
+// Register external dependency after construct
 func (o *FizzBuzz) SetRedis(redis *common.RedisClient) (err error) {
 	o.redis = redis
 	_, err = o.redis.Client.Ping().Result()
@@ -30,15 +34,20 @@ func (o *FizzBuzz) SetRedis(redis *common.RedisClient) (err error) {
 	return err
 }
 
+// Interface Service method for register protos on Gateway 
 func (o *FizzBuzz) RegisterGateway(gw *common.Gateway) error {
 	uri := fmt.Sprintf("%s:%d", gw.GrpcHost, gw.GrpcPort)
 	return pb.RegisterFizzBuzzHandlerFromEndpoint(gw.Ctx, gw.Mux, uri, gw.GrpcOpts)
 }
 
+// Interface Service method for register on GRPC server
 func (o *FizzBuzz) RegisterGrpc(gs *common.GrpcServer) {
 	pb.RegisterFizzBuzzServer(gs.Server, o)
 }
 
+// Endpoint :
+//  - grpc : Get
+//  - http : POST /fizzbuzz
 func (o *FizzBuzz) Get(ctx context.Context, in *pb.FizzBuzzGetRequest) (*pb.FizzBuzzGetResponse, error) {
 	results := []string{}
 	limit := uint64(in.Limit)
@@ -80,6 +89,9 @@ func (o *FizzBuzz) Get(ctx context.Context, in *pb.FizzBuzzGetRequest) (*pb.Fizz
 	return &pb.FizzBuzzGetResponse{Items: results}, nil
 }
 
+// Endpoint :
+//  - grpc : Stats
+//  - http : GET /fizzbuzz
 func (o *FizzBuzz) Stats(ctx context.Context, in *empty.Empty) (*pb.FizzBuzzStatsResponse, error) {
 	items, err := o.redis.Client.Keys("counter").Result()
 	if err == redis.Nil || len(items) == 0 {

@@ -44,7 +44,7 @@ func main() {
 
 	// Instantiate a redis connexion
 	redis := common.NewRedisClient(*redisHost, *redisPort, *redisPassword)
-	if redis.Connect() != nil {
+	if redis.IsConnected() != nil {
 		log.Fatal("Cannot enabled redis connexion")
 	}
 

@@ -6,6 +6,7 @@ import (
 	"golang.org/x/net/context"
 )
 
+// Definition of Gateway struct
 type Gateway struct {
 	Ctx context.Context
 	Mux *runtime.ServeMux
@@ -16,6 +17,7 @@ type Gateway struct {
 	services []ServiceInterface
 }
 
+// Init a Gateway
 func NewGateway(
 	ctx context.Context,
 	httpHost string,
@@ -35,10 +37,12 @@ func NewGateway(
 	}
 }
 
+// Add service in the local services list
 func (o *Gateway) AddService(service ServiceInterface) {
 	o.services = append(o.services, service)
 }
 
+// Register each service in the gateway
 func (o *Gateway) startServices() error {
 	for _, service := range o.services {
 		err := service.RegisterGateway(o)
@@ -49,6 +53,7 @@ func (o *Gateway) startServices() error {
 	return nil
 }
 
+// Start each services and server is ready for handle connexion
 func (o *Gateway) Start() error {
 	err :=  o.startServices()
 	if err != nil {

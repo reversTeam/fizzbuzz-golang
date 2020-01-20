@@ -19,6 +19,7 @@ type GrpcServer struct {
 	services []ServiceInterface
 }
 
+// Create a grpc server
 func NewGrpcServer(ctx context.Context, host string, port int) *GrpcServer {
 	return &GrpcServer{
 		Ctx: ctx,
@@ -31,6 +32,7 @@ func NewGrpcServer(ctx context.Context, host string, port int) *GrpcServer {
 	};
 }
 
+// Start listen tcp socket for handle grpc service
 func (o *GrpcServer) Listen() (err error) {
 	uri := fmt.Sprintf("%s:%d", o.host, o.port)
 	o.listener, err = net.Listen("tcp", uri)
@@ -43,16 +45,19 @@ func (o *GrpcServer) Listen() (err error) {
 	return err
 }
 
+// Add service to the local service array, need for register later
 func (o *GrpcServer) AddService(service ServiceInterface) {
 	o.services = append(o.services, service)
 }
 
+// Register services to the grpc server
 func (o *GrpcServer) startServices() {
 	for _, service := range o.services {
 		service.RegisterGrpc(o)
 	}
 }
 
+// Start a grpc server ready for handle connexion
 func (o *GrpcServer) Start() {
 	o.Listen()
 	o.startServices()
@@ -60,13 +65,14 @@ func (o *GrpcServer) Start() {
 	o.State = Ready
 }
 
+// Graceful stop, when SIG_TERM is send
 func (o *GrpcServer) GracefulStop() {
 	if o.isGracefulStopable() { 
 		o.Server.GracefulStop()
 	}
 }
 
-
+// Centralize GracefulStopable state
 func (o *GrpcServer) isGracefulStopable() bool {
 	switch (o.State) {
 	case

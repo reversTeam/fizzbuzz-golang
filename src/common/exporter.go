@@ -11,7 +11,7 @@ import (
     "github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
-
+// Definition of Exporter struct for expose scrapped metrics
 type Exporter struct {
 	host string
 	port int
@@ -19,11 +19,13 @@ type Exporter struct {
 	requests *prometheus.GaugeVec
 }
 
+// Initialize a exporter strucs
 func NewExporter(host string, port int, interval int) *Exporter {
 	exp := &Exporter{
 		host: host,
 		port: port,
 		interval: interval,
+		// Todo : handle this logic directly in the service
 		requests : promauto.NewGaugeVec(
 			prometheus.GaugeOpts{
 				Name: "fizzbuzz_request_sec",
@@ -34,6 +36,8 @@ func NewExporter(host string, port int, interval int) *Exporter {
 	return exp
 }
 
+// Not used yet
+// Watch metrics in the interval time
 func (o *Exporter) WatchedMetrics() {
 	go func() {
 		for {
@@ -43,6 +47,7 @@ func (o *Exporter) WatchedMetrics() {
 	}()
 }
 
+// Start to expose /metrics
 func (o *Exporter) Serve() {
 	uri := fmt.Sprintf("%s:%d", o.host, o.port)
 	http.Handle("/metrics", promhttp.Handler())
@@ -54,11 +59,13 @@ func (o *Exporter) Serve() {
 	} (uri)
 }
 
+// Increment Gauge request by code, method and path
 func (o *Exporter) IncrRequests(code int, method string, path string) {
 	str_code := strconv.Itoa(code)
 	o.requests.WithLabelValues(str_code, method, path).Inc()
 }
 
+// Http Gateway middleware for handle metrics on all requests services
 func (o *Exporter) HandleHttpHandler(h http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		method := r.Method

@@ -7,11 +7,12 @@ import (
 	"os"
 )
 
-
+// Defition of ServerGracefulStopableInterface for http & grpc server graceful stop
 type ServerGracefulStopableInterface interface{
 	GracefulStop()
 }
 
+// Catch SIG_TERM and exit propely
 func GracefulStopSignals(server ServerGracefulStopableInterface) (done chan bool) {
 	done = make(chan bool, 1)
 	sigs := make(chan os.Signal, 1)
