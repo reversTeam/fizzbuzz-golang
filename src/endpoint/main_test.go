@@ -9,6 +9,7 @@ import (
 	"google.golang.org/grpc"
 	"golang.org/x/net/context"
 	"github.com/golang/protobuf/proto"
+	"github.com/golang/protobuf/ptypes/empty"
 )
 
 func TestGrpcGetRequest(t *testing.T) {
@@ -42,7 +43,7 @@ func TestGrpcGetRequest(t *testing.T) {
 
 func fbStatsRequestSuccess(t *testing.T, c pbFizzbuzz.FizzBuzzClient, name string, int1 uint64, int2 uint64, limit uint64, str1 string, str2 string, value uint64)  {
 	t.Run(name, func (t2 *testing.T) {
-		have, err := c.Stats(context.Background(), &pbFizzbuzz.FizzBuzzStatsRequest{})
+		have, err := c.Stats(context.Background(), &empty.Empty{})
 		if err != nil {
 			log.Fatalf("Error when calling FizzBuzz Stats Request: %s", err)
 		}
@@ -64,9 +65,9 @@ func fbStatsRequestSuccess(t *testing.T, c pbFizzbuzz.FizzBuzzClient, name strin
 
 func fbStatsRequestError(t *testing.T, c pbFizzbuzz.FizzBuzzClient, name string, int1 uint64, int2 uint64, limit uint64, str1 string, str2 string, error string)  {
 	t.Run(name, func (t2 *testing.T) {
-		_, err := c.Stats(context.Background(), &pbFizzbuzz.FizzBuzzStatsRequest{})
+		_, err := c.Stats(context.Background(), &empty.Empty{})
 		if err == nil {
-			log.Fatalf("[%s] Error when calling FizzBuzz Stats Request: %s", name, err)
+			log.Fatalf("[%s] The request success or want failed: %s", name, err)
 		} else if err.Error() != error {
 			t.Errorf("[%s] The error message is not name \nhave -> %s\nwant -> %s\n", name, err.Error(), error)
 		}
