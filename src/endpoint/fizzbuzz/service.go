@@ -12,6 +12,7 @@ import (
 	"github.com/golang/protobuf/ptypes/empty"
 	"golang.org/x/net/context"
 	"sync"
+	"math"
 )
 
 // Define the service structure
@@ -72,31 +73,27 @@ func (o *FizzBuzz) Get(ctx context.Context, in *pb.FizzBuzzGetRequest) (*pb.Fizz
 		// we can accept to continue but we lost the bonus
 		return nil, errors.New("Internal error cannot init the counter")
 	}
+	nbWait := int(math.Ceil(float64(limit) / float64(10000)))
+	wg.Add(nbWait)
 	for i := uint64(0); i < limit; {
-		if i + 1000 <= limit {
-			wg.Add(1000)
-		} else if i != 0 {
-			wg.Add(int((limit - i) % 1000))
-		} else {
-			wg.Add(int(limit))
-		}
-		for  j := uint64(1); j <= 1000 && i < limit; j++ {
-			go func(waitGroup *sync.WaitGroup, results []string, k uint64, int1 uint64, int2 uint64, str1 string, str2 string, str1str2 string) {
-				defer waitGroup.Done()
-				if (k+1)%(int1*int2) == 0 {
-					results[k] = fizzbuzz
-				} else if (k+1)%int1 == 0 {
-					results[k] = str1
-				} else if (k+1)%int2 == 0 {
-					results[k] = str2
-				} else {
-					results[k] = strconv.FormatUint((k+1), 10)
-				}
-			}(&wg, results, i, int1, int2, in.Str1, in.Str2, fizzbuzz)
-			i++
-		}
-		wg.Wait()
+		go func(waitGroup *sync.WaitGroup, results []string, k uint64, l uint64, int1 uint64, int2 uint64, str1 string, str2 string, str1str2 string) {
+			for  j := uint64(1); j <= 10000 && k < l; j++ {
+					if (k+1)%(int1*int2) == 0 {
+						results[k] = fizzbuzz
+					} else if (k+1)%int1 == 0 {
+						results[k] = str1
+					} else if (k+1)%int2 == 0 {
+						results[k] = str2
+					} else {
+						results[k] = strconv.FormatUint((k+1), 10)
+					}
+				k++
+			}
+			waitGroup.Done()
+		}(&wg, results, i, limit, int1, int2, in.Str1, in.Str2, fizzbuzz)
+		i += 10000
 	}
+	wg.Wait()
 	if o.redis.IncrIndex("counter", key) != nil {
 		// we can accept to continue but we lost the bonus
 		return nil, errors.New("Internal error the index cannot be increase")
