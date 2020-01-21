@@ -48,20 +48,24 @@ func main() {
 	// Parse flags
 	flag.Parse()
 
-	// Create a gateway
+	// Create a gateway configuration
 	opts := []grpc.DialOption{
 		grpc.WithInsecure(),
 		grpc.WithDefaultCallOptions(grpc.MaxCallRecvMsgSize(1099511627776), grpc.MaxCallSendMsgSize(1099511627776)),
 	}
+	// Create a gateway
 	gw := common.NewGateway(ctx, *httpHost, *httpPort, *grpcHost, *grpcPort, opts)
 	// Add exporter for grafana export metrics
 	gw.Http.InitExporter(*exporterHost, *exporterPort, *exporterInterval)
 	// Catch ctrl+c and graceful stop 
 	done := common.GracefulStopSignals(gw.Http)
 
+	// Create a fizzbuzz service
 	fizzbuzzService := fizzbuzz.NewService()
+	// Handle fizzbuzz service in gateway server
 	gw.AddService(fizzbuzzService)
 
+	// Start a gateway server handle http connexions
 	if err := gw.Start(); err != nil {
 		log.Fatal(err)
 	}
