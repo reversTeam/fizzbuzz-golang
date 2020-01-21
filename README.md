@@ -14,6 +14,31 @@ The output would look like this:
 "1,2,fizz,4,buzz,fizz,7,8,fizz,buzz,11,fizz,13,14,fizzbuzz,16,...".
 ```
 
+Example for get request with the following parameters:
+ - int1: 3
+ - int2: 5
+ - limit: 20
+ - str1: fizz
+ - str2: buzz
+```bash
+curl -sX POST 127.0.0.1:8080/fizzbuzz -d '{"int1": 3, "int2": 5, "limit" : 20, "str1": "fizz", "str2":"buzz"}' | jq .
+{"Items":["1","2","fizz","4","buzz","fizz","7","8","fizz","buzz","11","fizz","13","14","fizzbuzz","16","17","fizz","19","buzz"]}
+```
+
+Example for get the most frequent requested (refer to bonus section)
+```bash
+curl -sX GET "127.0.0.1:8080/fizzbuzz" | jq .
+{
+  "Int1": "3",
+  "Int2": "5",
+  "Limit": "10",
+  "Str1": "fizz",
+  "Str2": "buzz",
+  "Requests": "2347358"
+}
+```
+
+
 ## The goal
 Implement a web server that will expose a REST API endpoint that: 
   - [x] Accepts five parameters : three integers int1, int2 and limit, and two strings str1 and str2.
