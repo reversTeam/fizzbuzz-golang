@@ -14,8 +14,8 @@ const (
 	HTTP_DEFAULT_PORT = 8080
 
 	// Default flag values for grpc connexion
-	GRPC_DEFAULT_HOST = "127.0.0.1"
-	GRPC_DEFAULT_PORT = 42001
+	SERVER_GRPC_DEFAULT_HOST = "127.0.0.1"
+	SERVER_GRPC_DEFAULT_PORT = 42001
 
 	// Default flag values for exporter expose
 	EXPORTER_DEFAULT_HOST = "127.0.0.1"
@@ -29,8 +29,8 @@ var (
 	httpPort = flag.Int("http-port", HTTP_DEFAULT_PORT, "http gateway port")
 
 	// flags for gprc connexion
-	grpcHost = flag.String("grpc-host", GRPC_DEFAULT_HOST, "grpc server host")
-	grpcPort = flag.Int("grpc-port", GRPC_DEFAULT_PORT, "grpc server port")
+	serverGrpcHost = flag.String("server-grpc-host", SERVER_GRPC_DEFAULT_HOST, "grpc server host")
+	serverGrpcPort = flag.Int("server-grpc-port", SERVER_GRPC_DEFAULT_PORT, "grpc server port")
 
 	// flags for exporter expose and interval conf
 	exporterHost = flag.String("exporter-host", EXPORTER_DEFAULT_HOST, "exporter host")
@@ -54,7 +54,7 @@ func main() {
 		grpc.WithDefaultCallOptions(grpc.MaxCallRecvMsgSize(1099511627776), grpc.MaxCallSendMsgSize(1099511627776)),
 	}
 	// Create a gateway
-	gw := common.NewGateway(ctx, *httpHost, *httpPort, *grpcHost, *grpcPort, opts)
+	gw := common.NewGateway(ctx, *httpHost, *httpPort, *serverGrpcHost, *serverGrpcPort, opts)
 	// Add exporter for grafana export metrics
 	gw.Http.InitExporter(*exporterHost, *exporterPort, *exporterInterval)
 	// Catch ctrl+c and graceful stop 

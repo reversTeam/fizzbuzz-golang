@@ -61,5 +61,5 @@ func (o *Gateway) Start() error {
 	}
 	o.Http.Handle("/", o.Mux)
 
-	return o.Http.Listen();
+	return o.Http.Start();
 }

@@ -1,3 +1,2 @@
 .DS_Store
-fizzbuzz-http
-fizzbuzz-grpc
+bin/

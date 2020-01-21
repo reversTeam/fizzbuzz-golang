@@ -33,10 +33,16 @@ func (o *RedisClient) CreateSortableIndex(index string, key string) (err error) 
 	_, err = o.Client.Get(key).Result()
 	if err == redis.Nil {
 		_, err = o.Client.Set(key, 1, 0).Result()
+		if err != nil {
+			return err
+		}
 		_, err = o.Client.ZAdd(index, &redis.Z{
 			Score:  0,
 			Member: key,
-		}).Result()	
+		}).Result()
+		if err != nil {
+			return err
+		}
 	} else if err != nil {
 		return err
 	}

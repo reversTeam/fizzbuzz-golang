@@ -1,5 +1,9 @@
 #!make
-
+lint:
+	golangci-lint run cmd/grpc/fizzbuzz_grpc.go
+	golangci-lint run cmd/http/fizzbuzz_http.go
+	golangci-lint run src/endpoint/*
+	golangci-lint run src/common/*
 
 install:
 	go get ./...
@@ -53,8 +57,8 @@ run:
 	go run gateway.go
 
 build:
-	GOOS=linux GOARCH=amd64 go build -o fizzbuzz-http ./main.go
-	GOOS=linux GOARCH=amd64 go build -o fizzbuzz-grpc ./src/endpoint/main.go
+	GOOS=linux GOARCH=amd64 go build -o bin/fizzbuzz-http ./cmd/http/fizzbuzz_htt.go
+	GOOS=linux GOARCH=amd64 go build -o bin/fizzbuzz-grpc ./cmd/grpc/fizzbuzz_grpc.go
 
 push:
 	docker build -t triviere42/fizzbuzz-golang .

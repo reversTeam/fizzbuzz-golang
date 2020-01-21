@@ -60,13 +60,13 @@ func (o *HttpServer) Handle(path string, mux *runtime.ServeMux) {
 }
 
 // Start the http server, ready for handle connexion
-func (o *HttpServer) Listen() error {
+func (o *HttpServer) Start() error {
 	uri := fmt.Sprintf("%s:%d", o.Host, o.Port)
 	log.Printf("[HTTP] Server listen on %s\n", uri)
 	return o.Server.ListenAndServe()
 }
 
 // Catch the SIG_TERM and exit cleanly
-func (o *HttpServer) GracefulStop() {
-	o.Server.Shutdown(context.Background())
+func (o *HttpServer) GracefulStop() error {
+	return o.Server.Shutdown(context.Background())
 }

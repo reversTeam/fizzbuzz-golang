@@ -50,12 +50,18 @@ func main() {
 
 	// Create your service
 	fizzbuzzService := fizzbuzz.NewService()
-	fizzbuzzService.SetRedis(redis)
+	err := fizzbuzzService.SetRedis(redis)
+	if err != nil {
+		log.Fatal("Cannot import redis connexion on Fizzbuzz service")
+	}
 
 	// Add your service
 	grpcServer.AddService(fizzbuzzService)
 
 	// Start Grpc Server
-	grpcServer.Start()
+	err = grpcServer.Start()
+	if err != nil {
+		log.Fatal("An error occured, the server can be running", err)
+	}
 	<-done
 }

@@ -58,18 +58,29 @@ func (o *GrpcServer) startServices() {
 }
 
 // Start a grpc server ready for handle connexion
-func (o *GrpcServer) Start() {
-	o.Listen()
+func (o *GrpcServer) Start() error {
+	err := o.Listen()
+	if err != nil {
+		return err
+	}
 	o.startServices()
-	go o.Server.Serve(o.listener)
+	go func(grpcServer *grpc.Server) {
+		err := grpcServer.Serve(o.listener)
+		// we can't catch this error, also we log it
+		if err != nil {
+			log.Fatal(err)
+		}
+	}(o.Server)
 	o.State = Ready
+	return nil
 }
 
 // Graceful stop, when SIG_TERM is send
-func (o *GrpcServer) GracefulStop() {
+func (o *GrpcServer) GracefulStop() error {
 	if o.isGracefulStopable() { 
 		o.Server.GracefulStop()
 	}
+	return nil
 }
 
 // Centralize GracefulStopable state

@@ -9,7 +9,7 @@ import (
 
 // Defition of ServerGracefulStopableInterface for http & grpc server graceful stop
 type ServerGracefulStopableInterface interface{
-	GracefulStop()
+	GracefulStop() error
 }
 
 // Catch SIG_TERM and exit propely
@@ -22,7 +22,10 @@ func GracefulStopSignals(server ServerGracefulStopableInterface) (done chan bool
 	go func() {
 		sig := <-sigs
 		log.Println("[SYSTEM]: Signal catch:", sig)
-		server.GracefulStop()
+		err := server.GracefulStop()
+		if err != nil {
+			log.Println("Server can't GracefulStop", err)
+		}
 		done <- true
 	}()
 	return
