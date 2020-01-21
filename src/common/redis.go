@@ -46,7 +46,7 @@ func (o *RedisClient) CreateSortableIndex(index string, key string) (err error) 
 	} else if err != nil {
 		return err
 	}
-	return nil	
+	return nil
 }
 
 // Get the key has better score (than more called)

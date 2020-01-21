@@ -77,7 +77,7 @@ func (o *GrpcServer) Start() error {
 
 // Graceful stop, when SIG_TERM is send
 func (o *GrpcServer) GracefulStop() error {
-	if o.isGracefulStopable() { 
+	if o.isGracefulStopable() {
 		o.Server.GracefulStop()
 	}
 	return nil

@@ -40,7 +40,7 @@ curl -sX GET "127.0.0.1:8080/fizzbuzz" | jq .
 
 
 ## The goal
-Implement a web server that will expose a REST API endpoint that: 
+Implement a web server that will expose a REST API endpoint that:
   - [x] Accepts five parameters : three integers int1, int2 and limit, and two strings str1 and str2.
   - [x] Returns a list of strings with numbers from 1 to limit, where: all multiples of int1 are replaced by str1, all multiples of int2 are replaced by str2, all multiples of int1 and int2 are replaced by str1str2.
 
@@ -65,11 +65,11 @@ The server needs to be:
   - Easy to maintain by other developers:
 	- [x] Linter : https://github.com/golangci/golangci-lint
 	- [x] CI : https://circleci.com/docs/
-	  - [x] Fonctionnal 
+	  - [x] Fonctionnal
 	  - [ ] Unit test (for the best)
 	- [ ] CD (for the best)
 		- Required to add registry in GCP
-		- Add variable in circle-ci for GCP access 
+		- Add variable in circle-ci for GCP access
 	- [ ] Changelog (for the best) : https://github.com/git-chglog/git-chglog
 
 ## Bonus

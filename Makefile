@@ -1,5 +1,6 @@
 #!make
 lint:
+	pre-commit run --all-files
 	golangci-lint run cmd/grpc/fizzbuzz_grpc.go
 	golangci-lint run cmd/http/fizzbuzz_http.go
 	golangci-lint run src/endpoint/*

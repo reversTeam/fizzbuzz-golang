@@ -56,11 +56,11 @@ func fbStatsRequestSuccess(t *testing.T, c pbFizzbuzz.FizzBuzzClient, name strin
 			Str2: str2,
 			Requests: value,
 		}
-		
+
 		if !proto.Equal(have, want) {
 			t.Errorf("[%s] Proto.Equal returned false:\nhave -> %v\nwant -> %v\n", name, have, want)
 		}
-	})	
+	})
 }
 
 func fbStatsRequestError(t *testing.T, c pbFizzbuzz.FizzBuzzClient, name string, int1 uint64, int2 uint64, limit uint64, str1 string, str2 string, error string)  {
@@ -71,7 +71,7 @@ func fbStatsRequestError(t *testing.T, c pbFizzbuzz.FizzBuzzClient, name string,
 		} else if err.Error() != error {
 			t.Errorf("[%s] The error message is not name \nhave -> %s\nwant -> %s\n", name, err.Error(), error)
 		}
-	})	
+	})
 }
 
 func fbGetRequestSuccess(t *testing.T, c pbFizzbuzz.FizzBuzzClient, name string, int1 uint64, int2 uint64, limit uint64, str1 string, str2 string, result []string)  {
@@ -90,11 +90,11 @@ func fbGetRequestSuccess(t *testing.T, c pbFizzbuzz.FizzBuzzClient, name string,
 		want := &pbFizzbuzz.FizzBuzzGetResponse{
 			Items: result,
 		}
-		
+
 		if !proto.Equal(have, want) {
 			t.Errorf("[%s] Proto.Equal returned false:\nhave -> %v\nwant -> %v\n", name, have, want)
 		}
-	})	
+	})
 }
 
 func fbGetRequestSuccessLoop(t *testing.T, c pbFizzbuzz.FizzBuzzClient, name string, int1 uint64, int2 uint64, limit uint64, str1 string, str2 string, result []string, n int)  {
@@ -114,12 +114,12 @@ func fbGetRequestSuccessLoop(t *testing.T, c pbFizzbuzz.FizzBuzzClient, name str
 			want := &pbFizzbuzz.FizzBuzzGetResponse{
 				Items: result,
 			}
-			
+
 			if !proto.Equal(have, want) {
 				t.Errorf("[%s] Proto.Equal returned false:\nhave -> %v\nwant -> %v\n", name, have, want)
 			}
 		}
-	})	
+	})
 }
 
 func fbGetRequestError(t *testing.T, c pbFizzbuzz.FizzBuzzClient, name string, int1 uint64, int2 uint64, limit uint64, str1 string, str2 string, result string)  {
@@ -131,13 +131,13 @@ func fbGetRequestError(t *testing.T, c pbFizzbuzz.FizzBuzzClient, name string, i
 			Str1: str1,
 			Str2: str2,
 		})
-		if err == nil { 
+		if err == nil {
 			t.Errorf("[%s] The request success or want failed", name)
 		} else if err.Error() != result {
 			t.Errorf("[%s] The error message is not name \nhave -> %s\nwant -> %s\n", name, err.Error(), result)
 		}
 
-	})	
+	})
 }
 
 

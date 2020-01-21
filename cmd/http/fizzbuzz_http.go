@@ -57,7 +57,7 @@ func main() {
 	gw := common.NewGateway(ctx, *httpHost, *httpPort, *serverGrpcHost, *serverGrpcPort, opts)
 	// Add exporter for grafana export metrics
 	gw.Http.InitExporter(*exporterHost, *exporterPort, *exporterInterval)
-	// Catch ctrl+c and graceful stop 
+	// Catch ctrl+c and graceful stop
 	done := common.GracefulStopSignals(gw.Http)
 
 	// Create a fizzbuzz service

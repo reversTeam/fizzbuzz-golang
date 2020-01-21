@@ -34,7 +34,7 @@ func (o *FizzBuzz) SetRedis(redis *common.RedisClient) (err error) {
 	return err
 }
 
-// Interface Service method for register protos on Gateway 
+// Interface Service method for register protos on Gateway
 func (o *FizzBuzz) RegisterGateway(gw *common.Gateway) error {
 	uri := fmt.Sprintf("%s:%d", gw.GrpcHost, gw.GrpcPort)
 	return pb.RegisterFizzBuzzHandlerFromEndpoint(gw.Ctx, gw.Mux, uri, gw.GrpcOpts)
@@ -58,7 +58,7 @@ func (o *FizzBuzz) Get(ctx context.Context, in *pb.FizzBuzzGetRequest) (*pb.Fizz
 		return nil, errors.New("int1 and int2 parameters need to be more than 0")
 	}
 	if int1 == int2 {
-		return nil, errors.New("We can't choice between str1 or str2, because int1 and int2 has a same value")	
+		return nil, errors.New("We can't choice between str1 or str2, because int1 and int2 has a same value")
 	}
 	if in.Str1 == "" || in.Str2 == "" {
 		return nil, errors.New("str1 and str2 parameters cannot be empty")
@@ -85,7 +85,7 @@ func (o *FizzBuzz) Get(ctx context.Context, in *pb.FizzBuzzGetRequest) (*pb.Fizz
 		// we can accept to continue but we lost the bonus
 		return nil, errors.New("Internal error the index cannot be increase")
 	}
-	
+
 	return &pb.FizzBuzzGetResponse{Items: results}, nil
 }
 
@@ -121,7 +121,7 @@ func (o *FizzBuzz) Stats(ctx context.Context, in *empty.Empty) (*pb.FizzBuzzStat
 	}
 	str1 := params[3]
 	str2 := params[4]
-	
+
 
 	return &pb.FizzBuzzStatsResponse{
 		Int1: uint64(int1),

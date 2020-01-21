@@ -134,7 +134,7 @@ func (o *FizzBuzz) Get(ctx context.Context, in *pb.FizzBuzzGetRequest) (*pb.Fizz
 			results = append(results, strconv.FormatUint(i, 10))
 		}
 	}
-	
+
 	return &pb.FizzBuzzGetResponse{Items: results}, nil
 }
 ```
