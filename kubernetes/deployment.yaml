@@ -20,7 +20,7 @@ kind: Deployment
 metadata:
   name: fizzbuzz
 spec:
-  replicas: 6
+  replicas: 4
   selector:
     matchLabels:
       app: fizzbuzz
