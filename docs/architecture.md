@@ -8,8 +8,8 @@ In this architecture description we do not take into account information that is
 ### Gateway & Grpc Server
 
 The program currently works thanks to two main components:
- - [Gateway](https://github.com/reversTeam/fizzbuzz-golang/tree/master/main.go) : Which allows to expose GRPC endpoints on HTTP protocol
- - [GRPC Server](https://github.com/reversTeam/fizzbuzz-golang/tree/master/src/endpoin/main.go) : Who embed logic and grpc services
+ - [Gateway](https://github.com/reversTeam/fizzbuzz-golang/tree/master/cmd/http/fizzbuzz_http.go) : Which allows to expose GRPC endpoints on HTTP protocol
+ - [GRPC Server](https://github.com/reversTeam/fizzbuzz-golang/tree/master/cmd/grpc/fizzbuzz_grpc.go) : Who embed logic and grpc services
 
 
 It is the gateway which connects to the GRPC service, as the following code shows us:
@@ -95,13 +95,13 @@ type ServiceInterface interface {
 	RegisterGrpc(*GrpcServer)
 }
 
-// used by ./main.go
+// used by ./cmd/http/fizzbuzz_http.gp
 func (o *FizzBuzz) RegisterGateway(gw *common.Gateway) error {
 	uri := fmt.Sprintf("%s:%d", gw.GrpcHost, gw.GrpcPort)
 	return pb.RegisterFizzBuzzHandlerFromEndpoint(gw.Ctx, gw.Mux, uri, gw.GrpcOpts)
 }
 
-// used by ./src/endpoint/main.go
+// used by ./cmd/grpc/fizzbuzz_grpc.go
 func (o *FizzBuzz) RegisterGrpc(gs *common.GrpcServer) {
 	pb.RegisterFizzBuzzServer(gs.Server, o)
 }
