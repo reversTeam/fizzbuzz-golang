@@ -57,7 +57,7 @@ run:
 	go run gateway.go
 
 build:
-	GOOS=linux GOARCH=amd64 go build -o bin/fizzbuzz-http ./cmd/http/fizzbuzz_htt.go
+	GOOS=linux GOARCH=amd64 go build -o bin/fizzbuzz-http ./cmd/http/fizzbuzz_http.go
 	GOOS=linux GOARCH=amd64 go build -o bin/fizzbuzz-grpc ./cmd/grpc/fizzbuzz_grpc.go
 
 push:

@@ -13,6 +13,7 @@ We cannot guarantee its functional state on another environment in the current s
  	- Linux see k3s, k8s, k9s
  - `go`: 1.13.5
  - `protobuff`: 3
+ - `golangci-lint` : Please see https://github.com/golangci/golangci-lint#editor-integration
 
 
 ## How to install

@@ -38,7 +38,7 @@ The server needs to be:
 	- [ ] Terraformed (for the best)
 
   - Easy to maintain by other developers:
-	- [ ] Linter
+	- [x] Linter : https://github.com/golangci/golangci-lint
 	- [x] CI : https://circleci.com/docs/
 	  - [x] Fonctionnal 
 	  - [ ] Unit test (for the best)
