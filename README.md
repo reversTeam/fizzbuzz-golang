@@ -1,11 +1,11 @@
 # fizzbuzz-golang
 
-![Architecture](https://raw.github.com/reversTeam/fizzbuzz-golang/master/docs/assets/fizzbuzz-architecture.jpg)
-
 - [How to setup the project](https://github.com/reversTeam/fizzbuzz-golang/tree/master/docs/setup.md)
 - [How to use](https://github.com/reversTeam/fizzbuzz-golang/tree/master/docs/how_to_use.md)
 - [Deployment](https://github.com/reversTeam/fizzbuzz-golang/tree/master/docs/deployment.md)
 - [Architecture](https://github.com/reversTeam/fizzbuzz-golang/tree/master/docs/architecture.md)
+- [Create your service](https://github.com/reversTeam/fizzbuzz-golang/tree/master/docs/create_new_service.md)
+- [Why these choices](https://github.com/reversTeam/fizzbuzz-golang/tree/master/docs/why_these_choices.md)
 
 The original fizz-buzz consists in writing all numbers from 1 to 100, and just replacing all multiples of 3 by "fizz", all multiples of 5 by "buzz", and all multiples of 15 by "fizzbuzz".
 
@@ -38,6 +38,7 @@ curl -sX GET "127.0.0.1:8080/fizzbuzz" | jq .
 }
 ```
 
+![Architecture](https://raw.github.com/reversTeam/fizzbuzz-golang/master/docs/assets/fizzbuzz-architecture.jpg)
 
 ## The goal
 Implement a web server that will expose a REST API endpoint that:
@@ -58,6 +59,7 @@ The server needs to be:
 	  - https://devopscube.com/setup-grafana-kubernetes/
 	    - Import Dashboard: [8588](https://grafana.com/grafana/dashboards/8588)
 	    - Personnal metrics
+![Actual Deployment](https://raw.github.com/reversTeam/fizzbuzz-golang/master/docs/assets/dashboard.png)
 	- [ ] Alerting
 	  - https://devopscube.com/alert-manager-kubernetes-guide/
 	- [ ] Terraformed (for the best)
