@@ -1,5 +1,7 @@
 # fizzbuzz-golang
 
+#### Warning: Please note that the use of this project entails costs linked to the use of GCP, inquire before starting, for those who do not have a google account offers you $ 300 for a period of one year (to be checked accordingly of your conditions of use and their conditions of use and sales).
+
 - [How to setup the project](https://github.com/reversTeam/fizzbuzz-golang/tree/master/docs/setup.md)
 - [How to use](https://github.com/reversTeam/fizzbuzz-golang/tree/master/docs/how_to_use.md)
 - [Deployment](https://github.com/reversTeam/fizzbuzz-golang/tree/master/docs/deployment.md)
